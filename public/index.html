@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内部网盘资源库</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fuse.js 模糊搜索库 -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f172a',
+                        secondary: '#1e293b',
+                        accent: '#3b82f6',
+                        highlight: '#f43f5e'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-primary text-gray-200 min-h-screen flex flex-col">
+
+    <!-- 🛡️ 访问验证模态框 (暗色主题适配) -->
+    <div id="accessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(6px);">
+        <div style="background:#1e293b; border:1px solid #334155; border-radius:16px; padding:2rem; max-width:400px; width:calc(100% - 2rem); box-shadow:0 20px 60px rgba(0,0,0,0.5); animation:modalIn 0.3s ease;">
+            <div style="font-size:1.25rem; font-weight:700; color:#f8fafc; text-align:center; margin-bottom:1.5rem;">🔒 请输入访问码继续</div>
+            
+            <a id="accessLink" href="#" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; width:100%; padding:0.75rem; background:#3b82f6; color:#fff; border-radius:10px; font-weight:700; text-decoration:none; margin-bottom:1.5rem; transition:background 0.2s;">
+                <span style="margin-right:0.5rem;">👉</span> 点击获取 <span id="linkDate" style="margin-left:0.25rem;"></span> 访问码
+            </a>
+            
+            <label for="accessCodeInput" style="display:block; font-size:0.875rem; color:#94a3b8; margin-bottom:0.5rem; font-weight:600;">请输入访问码：</label>
+            <input id="accessCodeInput" type="text" placeholder="请输入访问码" maxlength="15" autocomplete="off" style="width:100%; padding:0.75rem 1rem; border:2px solid #334155; border-radius:10px; font-size:1rem; outline:none; background:#0f172a; color:#fff; box-sizing:border-box;" />
+            
+            <button id="verifyBtn" style="width:100%; padding:0.85rem; background:#22c55e; color:#fff; border:none; border-radius:10px; font-size:1.1rem; font-weight:700; cursor:pointer; margin-top:1rem;">✅ 验证访问码</button>
+            
+            <div id="errorText" style="color:#ef4444; font-size:0.875rem; text-align:center; margin-top:1rem; font-weight:600; display:none;"></div>
+        </div>
+    </div>
+    <style>
+        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        #accessModal input:focus { border-color: #3b82f6 !important; }
+        #accessModal input.input-error { border-color: #ef4444 !important; }
+        #accessModal .error-msg.show { display: block !important; }
+        #accessLink:hover { background: #2563eb; }
+        #verifyBtn:hover { background: #16a34a; }
+    </style>
+
+    <!-- 顶栏 -->
+    <header class="bg-secondary border-b border-gray-700 p-4 flex items-center justify-between sticky top-0 z-50 shadow-lg">
+        <h1 id="site-title" class="text-xl font-bold text-white">资源库</h1>
+        <div class="flex-1 max-w-xl mx-8">
+            <input type="text" id="search-input" placeholder="🔍 搜索资源名称..." 
+                   class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent text-sm">
+        </div>
+        <div class="flex gap-4">
+            <a id="btn-announcement" href="#" target="_blank" class="text-sm hover:text-accent transition">📢 公告</a>
+            <a id="btn-message-board" href="#" target="_blank" class="text-sm hover:text-accent transition">💬 留言板</a>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- 侧边栏：分类树 -->
+        <aside class="w-64 bg-secondary border-r border-gray-700 p-4 overflow-y-auto hidden md:block">
+            <h2 class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">资源分类</h2>
+            <button id="btn-reset-category" class="w-full text-left py-2 px-3 rounded mb-2 hover:bg-gray-700 text-accent font-medium text-sm">📂 全部资源</button>
+            <ul id="category-tree" class="space-y-1 text-sm">
+                <!-- JS 动态渲染 -->
+            </ul>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="flex-1 p-6 overflow-y-auto" id="main-content">
+            <!-- 控制栏 -->
+            <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+                <div class="text-sm text-gray-400">
+                    当前状态：<span id="current-status" class="text-white font-medium">全部</span> 
+                    <span class="mx-2">|</span> 
+                    共 <span id="total-count" class="text-accent font-bold">0</span> 条结果
+                </div>
+                <div class="flex bg-gray-800 rounded-lg p-1">
+                    <button id="sort-date" class="px-4 py-1.5 rounded text-sm font-medium bg-accent text-white">按更新时间</button>
+                    <button id="sort-pinyin" class="px-4 py-1.5 rounded text-sm font-medium text-gray-400 hover:text-white">按名称</button>
+                </div>
+            </div>
+
+            <!-- 卡片网格容器 -->
+            <div id="card-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+                <!-- JS 动态渲染 -->
+            </div>
+
+            <!-- 分页器 -->
+            <div id="pagination" class="flex justify-center items-center gap-2 mt-8 mb-12">
+                <!-- JS 动态渲染 -->
+            </div>
+
+<!-- 统计预留区 (替换原有的占位内容) -->
+<section class="mt-12 border-t border-gray-700 pt-8">
+    <h3 class="text-lg font-bold mb-4 text-gray-300">📊 统计</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-secondary p-4 rounded-lg border border-gray-700">
+            <div class="text-gray-400 text-sm">总访问量</div>
+            <div id="stat-total-views" class="text-2xl font-bold text-white mt-1">加载中...</div>
+        </div>
+        <div class="bg-secondary p-4 rounded-lg border border-gray-700">
+            <div class="text-gray-400 text-sm">今日访问</div>
+            <div id="stat-today-views" class="text-2xl font-bold text-white mt-1">加载中...</div>
+        </div>
+        <div class="bg-secondary p-4 rounded-lg border border-gray-700">
+            <div class="text-gray-400 text-sm">热度排行 Top 5</div>
+            <ul id="stat-top-resources" class="text-sm text-gray-300 mt-2 space-y-1">
+                <li class="text-gray-500">加载中...</li>
+            </ul>
+        </div>
+    </div>
+</section>
+        </main>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div id="modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-[100] flex items-center justify-center p-4">
+        <div class="bg-secondary w-full max-w-lg rounded-xl shadow-2xl border border-gray-700 overflow-hidden transform transition-all">
+            <div class="p-6 border-b border-gray-700 flex justify-between items-start">
+                <h2 id="modal-title" class="text-xl font-bold text-white pr-4"></h2>
+                <button id="modal-close" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+            </div>
+            <div class="p-6">
+                <div id="modal-meta" class="flex flex-wrap gap-2 mb-4 text-xs"></div>
+                <div id="modal-links" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="verify.js"></script>
+</body>
+</html>

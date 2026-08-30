@@ -1,0 +1,14 @@
+# 系统/编辑器缓存
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Node 依赖（如果有）
+node_modules/
+
+# ⚠️ 绝对不要上传的敏感文件
+.env
+wrangler.toml
+*.key
