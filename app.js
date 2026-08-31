@@ -199,17 +199,21 @@ if (mobileTree) {
             return;
         }
 
-        // 点击父分类：只展开/收起子分类，不关闭抽屉
+        // 点击父分类：在移动端面板内展开/收起子分类
         const parentItem = e.target.closest('.parent-cat');
         if (parentItem) {
-            const cat = parentItem.getAttribute('data-cat');
-            const desktopItem = desktopTree.querySelector(`.parent-cat[data-cat="${cat}"]`);
-            if (desktopItem) desktopItem.click();
-            // 不关闭抽屉，让用户继续选子分类
+            const subUl = parentItem.nextElementSibling;
+            if (subUl && subUl.tagName === 'UL') {
+                subUl.classList.toggle('hidden');
+            }
+            // 切换箭头方向
+            const arrow = parentItem.querySelector('span:last-child');
+            if (arrow) {
+                arrow.style.transform = subUl.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(90deg)';
+            }
         }
     });
 }
-
 // 移动端"全部资源"按钮
 if (mobileResetBtn) {
     mobileResetBtn.addEventListener('click', () => {
