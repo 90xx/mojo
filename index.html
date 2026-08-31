@@ -67,22 +67,38 @@
     </header>
 
     <div class="flex flex-1 overflow-hidden">
-<!-- 移动端分类入口（仅手机端可见） -->
-    <div class="md:hidden px-4 pt-3">
-        <button id="mobile-category-btn" 
-                class="w-full flex items-center justify-between py-2.5 px-3 rounded-lg bg-secondary border border-gray-700 text-sm text-gray-300">
-            <span id="mobile-category-label">📂 全部资源</span>
-            <svg class="w-4 h-4 transition-transform" id="mobile-category-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+<!-- 手机端打开分类抽屉的按钮 -->
+    <button id="mobile-category-btn" 
+            class="md:hidden fixed bottom-6 right-6 z-30 w-12 h-12 rounded-full bg-accent text-white shadow-lg flex items-center justify-center">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+        </svg>
+    </button>
+
+
+<!-- 移动端分类抽屉（左侧滑出） -->
+<!-- 遮罩层 -->
+<div id="mobile-category-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" aria-hidden="true"></div>
+
+<!-- 抽屉面板 -->
+<aside id="mobile-category-drawer" 
+       class="fixed top-0 left-0 h-full w-72 bg-[var(--bg-primary,#1a1a2e)] border-r border-gray-700 z-50 transform -translate-x-full transition-transform duration-300 md:hidden overflow-y-auto">
+    <div class="flex items-center justify-between p-4 border-b border-gray-700">
+        <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">资源分类</h2>
+        <button id="mobile-drawer-close" class="p-1 rounded hover:bg-gray-700 text-gray-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
-        <div id="mobile-category-panel" class="hidden mt-2 p-3 bg-secondary rounded-lg border border-gray-700 max-h-60 overflow-y-auto">
-            <button id="mobile-btn-reset-category" class="w-full text-left py-2 px-3 rounded mb-2 hover:bg-gray-700 text-accent font-medium text-sm">📂 全部资源</button>
-            <ul id="mobile-category-tree" class="space-y-1 text-sm">
-                <!-- JS 动态克隆 -->
-            </ul>
-        </div>
     </div>
+    <div class="p-4">
+        <button id="mobile-btn-reset-category" class="w-full text-left py-2 px-3 rounded mb-2 hover:bg-gray-700 text-accent font-medium text-sm">📂 全部资源</button>
+        <ul id="mobile-category-tree" class="space-y-1 text-sm">
+            <!-- JS 动态克隆 -->
+        </ul>
+    </div>
+</aside>
+
         <!-- 侧边栏：分类树 -->
         <aside class="w-64 bg-secondary border-r border-gray-700 p-4 overflow-y-auto hidden md:block">
             <h2 class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">资源分类</h2>

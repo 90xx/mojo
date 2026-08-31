@@ -148,22 +148,25 @@ function applyFiltersAndRender() {
     renderPage();
 }
 
-// ========== 移动端分类下拉交互 ==========
-const mobileBtn = document.getElementById('mobile-category-btn');
-const mobilePanel = document.getElementById('mobile-category-panel');
-const mobileArrow = document.getElementById('mobile-category-arrow');
-const mobileLabel = document.getElementById('mobile-category-label');
+// ========== 移动端分类抽屉交互 ==========
+const mobileDrawer = document.getElementById('mobile-category-drawer');
+const mobileOverlay = document.getElementById('mobile-category-overlay');
+const mobileDrawerClose = document.getElementById('mobile-drawer-close');
 const mobileTree = document.getElementById('mobile-category-tree');
 const mobileResetBtn = document.getElementById('mobile-btn-reset-category');
 const desktopTree = document.getElementById('category-tree');
 
-// 展开/收起
-if (mobileBtn) {
-    mobileBtn.addEventListener('click', () => {
-        const isHidden = mobilePanel.classList.contains('hidden');
-        mobilePanel.classList.toggle('hidden');
-        mobileArrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
-    });
+// 打开抽屉
+function openMobileDrawer() {
+    syncMobileCategoryTree();
+    mobileDrawer.classList.remove('-translate-x-full');
+    mobileOverlay.classList.remove('hidden');
+}
+
+// 关闭抽屉
+function closeMobileDrawer() {
+    mobileDrawer.classList.add('-translate-x-full');
+    mobileOverlay.classList.add('hidden');
 }
 
 // 同步桌面端分类树到移动端
@@ -173,17 +176,25 @@ function syncMobileCategoryTree() {
     }
 }
 
-// 移动端点击分类项 → 触发桌面端对应项的点击
+// 关闭按钮
+if (mobileDrawerClose) {
+    mobileDrawerClose.addEventListener('click', closeMobileDrawer);
+}
+
+// 点击遮罩关闭
+if (mobileOverlay) {
+    mobileOverlay.addEventListener('click', closeMobileDrawer);
+}
+
+// 移动端点击分类项 → 触发桌面端对应项的点击 → 关闭抽屉
 if (mobileTree) {
     mobileTree.addEventListener('click', (e) => {
-        const item = e.target.closest('[data-category]');
+        const item = e.target.closest('[data-cat]');
         if (item) {
-            const category = item.getAttribute('data-category');
-            const desktopItem = desktopTree.querySelector(`[data-category="${category}"]`);
+            const cat = item.getAttribute('data-cat');
+            const desktopItem = desktopTree.querySelector(`[data-cat="${cat}"]`);
             if (desktopItem) desktopItem.click();
-            mobileLabel.textContent = '📂 ' + item.textContent.trim();
-            mobilePanel.classList.add('hidden');
-            mobileArrow.style.transform = 'rotate(0deg)';
+            closeMobileDrawer();
         }
     });
 }
@@ -192,10 +203,13 @@ if (mobileTree) {
 if (mobileResetBtn) {
     mobileResetBtn.addEventListener('click', () => {
         document.getElementById('btn-reset-category').click();
-        mobileLabel.textContent = '📂 全部资源';
-        mobilePanel.classList.add('hidden');
-        mobileArrow.style.transform = 'rotate(0deg)';
+        closeMobileDrawer();
     });
+}
+
+const mobileBtn = document.getElementById('mobile-category-btn');
+if (mobileBtn) {
+    mobileBtn.addEventListener('click', openMobileDrawer);
 }
 
 
@@ -505,3 +519,4 @@ function bindEvents() {
         if (e.target.id === 'modal') document.getElementById('modal').classList.add('hidden');
     };
 }
+
