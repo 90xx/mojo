@@ -20,10 +20,11 @@ window.initResourceSite = async function() {
         // 1. 加载配置
         const configRes = await fetch('config.json');
         AppState.config = await configRes.json();
-        
+
         // 2. 初始化 UI 基础配置
         document.getElementById('site-title').textContent = AppState.config.siteName;
         document.getElementById('btn-message-board').href = AppState.config.messageBoardUrl;
+        
         // 兼容旧版 announcementUrl 或新版直接文本
         const announceBtn = document.getElementById('btn-announcement');
         if (announceBtn) {
@@ -36,7 +37,7 @@ window.initResourceSite = async function() {
 
         // 3. 加载并合并所有数据（含每日缓存）
         await loadAllData();
-        
+
         // 4. 初始化搜索引擎 (Fuse.js)
         AppState.fuse = new Fuse(AppState.allData, {
             keys: ['title', 'pinyin'],
@@ -46,10 +47,10 @@ window.initResourceSite = async function() {
 
         // 5. 渲染侧边栏分类树
         renderCategoryTree();
-        
+
         // 6. 绑定全局交互事件
         bindEvents();
-        
+
         // 7. 首次渲染列表
         applyFiltersAndRender();
 
@@ -69,8 +70,8 @@ const CACHE_PREFIX = 'zaozi_data_';
 async function loadAllData() {
     // 1. 获取北京时间日期作为缓存 Key
     const now = new Date();
-    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-    const today = new Date(utc + 8 * 3600000).toLocaleDateString('sv');
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const today = new Date(utc + (8 * 3600000)).toLocaleDateString('sv');
     const cacheKey = CACHE_PREFIX + today;
 
     // 2. 尝试读取今日缓存
@@ -121,13 +122,11 @@ function applyFiltersAndRender() {
     else if (AppState.currentCategory) {
         const tree = AppState.config.categoryTree;
         let targetCategories = [];
-        
         if (tree[AppState.currentCategory]) {
             targetCategories = [AppState.currentCategory, ...tree[AppState.currentCategory].children];
         } else {
             targetCategories = [AppState.currentCategory];
         }
-
         data = data.filter(item => 
             item.categories && item.categories.some(cat => targetCategories.includes(cat))
         );
@@ -142,7 +141,6 @@ function applyFiltersAndRender() {
 
     AppState.filteredData = data;
     AppState.currentPage = 1;
-    
     updateStatusUI();
     renderPage();
 }
@@ -164,7 +162,6 @@ function renderPage() {
     }
 
     let lastGroupLabel = '';
-
     pageData.forEach(item => {
         // 插入分组标签
         let currentLabel = '';
@@ -235,7 +232,6 @@ function renderCategoryTree() {
                 <span class="text-xs text-gray-500 transform transition-transform group-hover:translate-x-1">▶</span>
             </div>
         `;
-        
         const subUl = document.createElement('ul');
         subUl.className = 'ml-4 mt-1 space-y-1 hidden border-l border-gray-700 pl-2';
         
@@ -244,7 +240,7 @@ function renderCategoryTree() {
             childLi.innerHTML = `<div class="p-1.5 px-3 rounded hover:bg-gray-700 cursor-pointer text-gray-400 hover:text-white child-cat" data-cat="${child}">📄 ${child}</div>`;
             subUl.appendChild(childLi);
         });
-
+        
         parentLi.appendChild(subUl);
         treeContainer.appendChild(parentLi);
     }
@@ -253,7 +249,6 @@ function renderCategoryTree() {
 // ================= 统计模块 =================
 const StatsManager = {
     apiUrl: '',
-
     init(config) {
         this.apiUrl = config.statsApiUrl;
         if (!this.apiUrl) {
@@ -263,7 +258,6 @@ const StatsManager = {
         this.fetchStats();
         this.recordView();
     },
-
     async fetchStats() {
         try {
             const res = await fetch(`${this.apiUrl}/api/stats`);
@@ -273,7 +267,7 @@ const StatsManager = {
             const todayEl = document.getElementById('stat-today-views');
             if (totalEl) totalEl.textContent = data.totalViews.toLocaleString();
             if (todayEl) todayEl.textContent = data.todayViews.toLocaleString();
-            
+
             const topList = document.getElementById('stat-top-resources');
             if (topList) {
                 topList.innerHTML = '';
@@ -298,19 +292,16 @@ const StatsManager = {
             if (todayEl) todayEl.textContent = '--';
         }
     },
-
     // 防刷 PV：同一用户一天只上报一次
     recordView() {
         const today = new Date().toISOString().split('T')[0];
         const lastViewDate = localStorage.getItem('last_stats_view_date');
-        
         if (lastViewDate !== today) {
             fetch(`${this.apiUrl}/api/stats/view`, { method: 'POST' })
                 .then(() => localStorage.setItem('last_stats_view_date', today))
                 .catch(err => console.error("上报 PV 失败:", err));
         }
     },
-
     // 记录资源点击热度
     recordClick(title) {
         if (!this.apiUrl) return;
@@ -338,7 +329,6 @@ function showModal(item) {
 
     const linksContainer = document.getElementById('modal-links');
     linksContainer.innerHTML = '';
-    
     if (!item.links || item.links.length === 0) {
         linksContainer.innerHTML = '<p class="text-gray-500 text-sm">暂无有效链接</p>';
     } else {
@@ -362,19 +352,42 @@ function showModal(item) {
 
     // ✅ 上报点击事件
     StatsManager.recordClick(item.title);
-
     modal.classList.remove('hidden');
 }
 
 function updateStatusUI() {
     const statusEl = document.getElementById('current-status');
     const countEl = document.getElementById('total-count');
-    
     if (statusEl) statusEl.textContent = AppState.searchQuery ? `搜索: "${AppState.searchQuery}"` : (AppState.currentCategory || '全部');
     if (countEl) countEl.textContent = AppState.filteredData.length;
 }
 
 function bindEvents() {
+    // ================= 新增：移动端侧边栏控制 =================
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const btnOpen = document.getElementById('btn-mobile-category');
+    const btnClose = document.getElementById('btn-close-sidebar');
+
+    const openSidebar = () => {
+        if (!sidebar) return;
+        sidebar.classList.remove('-translate-x-full');
+        if (overlay) overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // 锁定背景滚动
+    };
+
+    const closeSidebar = () => {
+        if (!sidebar) return;
+        sidebar.classList.add('-translate-x-full');
+        if (overlay) overlay.classList.add('hidden');
+        document.body.style.overflow = ''; // 恢复滚动
+    };
+
+    if (btnOpen) btnOpen.onclick = openSidebar;
+    if (btnClose) btnClose.onclick = closeSidebar;
+    if (overlay) overlay.onclick = closeSidebar;
+    // =====================================================
+
     // 1. 搜索框防抖
     let searchTimer;
     document.getElementById('search-input').addEventListener('input', (e) => {
@@ -403,22 +416,28 @@ function bindEvents() {
     document.getElementById('category-tree').addEventListener('click', (e) => {
         const target = e.target.closest('[data-cat]');
         if (!target) return;
-        
+
         if (target.classList.contains('parent-cat')) {
             const subUl = target.nextElementSibling;
             subUl.classList.toggle('hidden');
             const arrow = target.querySelector('span:last-child');
             arrow.textContent = subUl.classList.contains('hidden') ? '▶' : '▼';
         }
-        
+
         AppState.currentCategory = target.dataset.cat;
         AppState.searchQuery = '';
         document.getElementById('search-input').value = '';
         
+        // 高亮当前选中项
         document.querySelectorAll('#category-tree [data-cat]').forEach(el => el.classList.remove('category-active'));
         target.classList.add('category-active');
-        
+
         applyFiltersAndRender();
+
+        // ✅ 新增：移动端选择子类后自动关闭抽屉
+        if (window.innerWidth < 768 && target.classList.contains('child-cat')) {
+            closeSidebar();
+        }
     });
 
     // 4. 重置分类
@@ -434,7 +453,6 @@ function bindEvents() {
     document.getElementById('pagination').addEventListener('click', (e) => {
         const btn = e.target.closest('[data-page]');
         if (!btn || btn.disabled) return;
-        
         const val = btn.dataset.page;
         const totalPages = Math.ceil(AppState.filteredData.length / AppState.config.pageSize);
         
