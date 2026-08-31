@@ -351,9 +351,7 @@ const StatsManager = {
             const res = await fetch(`${this.apiUrl}/api/stats`);
             const data = await res.json();
             
-            const totalEl = document.getElementById('stat-total-views');
             const todayEl = document.getElementById('stat-today-views');
-            if (totalEl) totalEl.textContent = data.totalViews.toLocaleString();
             if (todayEl) todayEl.textContent = data.todayViews.toLocaleString();
             
             const topList = document.getElementById('stat-top-resources');
@@ -374,9 +372,7 @@ const StatsManager = {
             }
         } catch (err) {
             console.error("获取统计数据失败:", err);
-            const totalEl = document.getElementById('stat-total-views');
             const todayEl = document.getElementById('stat-today-views');
-            if (totalEl) totalEl.textContent = '--';
             if (todayEl) todayEl.textContent = '--';
         }
     },
