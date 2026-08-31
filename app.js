@@ -148,6 +148,57 @@ function applyFiltersAndRender() {
     renderPage();
 }
 
+// ========== 移动端分类下拉交互 ==========
+const mobileBtn = document.getElementById('mobile-category-btn');
+const mobilePanel = document.getElementById('mobile-category-panel');
+const mobileArrow = document.getElementById('mobile-category-arrow');
+const mobileLabel = document.getElementById('mobile-category-label');
+const mobileTree = document.getElementById('mobile-category-tree');
+const mobileResetBtn = document.getElementById('mobile-btn-reset-category');
+const desktopTree = document.getElementById('category-tree');
+
+// 展开/收起
+if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => {
+        const isHidden = mobilePanel.classList.contains('hidden');
+        mobilePanel.classList.toggle('hidden');
+        mobileArrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+    });
+}
+
+// 同步桌面端分类树到移动端
+function syncMobileCategoryTree() {
+    if (desktopTree && mobileTree) {
+        mobileTree.innerHTML = desktopTree.innerHTML;
+    }
+}
+
+// 移动端点击分类项 → 触发桌面端对应项的点击
+if (mobileTree) {
+    mobileTree.addEventListener('click', (e) => {
+        const item = e.target.closest('[data-category]');
+        if (item) {
+            const category = item.getAttribute('data-category');
+            const desktopItem = desktopTree.querySelector(`[data-category="${category}"]`);
+            if (desktopItem) desktopItem.click();
+            mobileLabel.textContent = '📂 ' + item.textContent.trim();
+            mobilePanel.classList.add('hidden');
+            mobileArrow.style.transform = 'rotate(0deg)';
+        }
+    });
+}
+
+// 移动端"全部资源"按钮
+if (mobileResetBtn) {
+    mobileResetBtn.addEventListener('click', () => {
+        document.getElementById('btn-reset-category').click();
+        mobileLabel.textContent = '📂 全部资源';
+        mobilePanel.classList.add('hidden');
+        mobileArrow.style.transform = 'rotate(0deg)';
+    });
+}
+
+
 // ================= 渲染逻辑 =================
 function renderPage() {
     const grid = document.getElementById('card-grid');
@@ -249,6 +300,7 @@ function renderCategoryTree() {
         parentLi.appendChild(subUl);
         treeContainer.appendChild(parentLi);
     }
+ syncMobileCategoryTree();
 }
 
 // ================= 统计模块 =================
