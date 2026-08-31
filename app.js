@@ -186,15 +186,26 @@ if (mobileOverlay) {
     mobileOverlay.addEventListener('click', closeMobileDrawer);
 }
 
-// 移动端点击分类项 → 触发桌面端对应项的点击 → 关闭抽屉
+// 移动端点击分类项 → 区分父/子分类
 if (mobileTree) {
     mobileTree.addEventListener('click', (e) => {
-        const item = e.target.closest('[data-cat]');
-        if (item) {
-            const cat = item.getAttribute('data-cat');
-            const desktopItem = desktopTree.querySelector(`[data-cat="${cat}"]`);
+        // 点击子分类：触发筛选 + 关闭抽屉
+        const childItem = e.target.closest('.child-cat');
+        if (childItem) {
+            const cat = childItem.getAttribute('data-cat');
+            const desktopItem = desktopTree.querySelector(`.child-cat[data-cat="${cat}"]`);
             if (desktopItem) desktopItem.click();
             closeMobileDrawer();
+            return;
+        }
+
+        // 点击父分类：只展开/收起子分类，不关闭抽屉
+        const parentItem = e.target.closest('.parent-cat');
+        if (parentItem) {
+            const cat = parentItem.getAttribute('data-cat');
+            const desktopItem = desktopTree.querySelector(`.parent-cat[data-cat="${cat}"]`);
+            if (desktopItem) desktopItem.click();
+            // 不关闭抽屉，让用户继续选子分类
         }
     });
 }
