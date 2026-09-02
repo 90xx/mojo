@@ -1,4 +1,3 @@
-
 // ================= 状态管理 =================
 const AppState = {
     allData: [],
@@ -12,20 +11,15 @@ const AppState = {
 };
 
 // ================= 初始化入口 =================
-// ✅ 暴露给全局，由 verify.js 验证通过后调用
 window.initResourceSite = async function() {
-    // 防止重复初始化
     if (AppState.allData.length > 0) return;
 
     try {
-        // 1. 加载配置
         const configRes = await fetch('config.json');
         AppState.config = await configRes.json();
         
-        // 2. 初始化 UI 基础配置
         document.getElementById('site-title').textContent = AppState.config.siteName;
         document.getElementById('btn-message-board').href = AppState.config.messageBoardUrl;
-        // 兼容旧版 announcementUrl 或新版直接文本
         const announceBtn = document.getElementById('btn-announcement');
         if (announceBtn) {
             if (AppState.config.announcementUrl) {
@@ -35,26 +29,17 @@ window.initResourceSite = async function() {
             }
         }
 
-        // 3. 加载并合并所有数据（含每日缓存）
         await loadAllData();
         
-        // 4. 初始化搜索引擎 (Fuse.js)
         AppState.fuse = new Fuse(AppState.allData, {
             keys: ['title', 'pinyin'],
             threshold: 0.3,
             ignoreLocation: true
         });
 
-        // 5. 渲染侧边栏分类树
-        renderCategoryTree();
-        
-        // 6. 绑定全局交互事件
+        renderParentCategories();
         bindEvents();
-        
-        // 7. 首次渲染列表
         applyFiltersAndRender();
-
-        // 8. ✅ 初始化统计模块（在数据加载完成后执行）
         StatsManager.init(AppState.config);
 
     } catch (error) {
@@ -68,13 +53,11 @@ window.initResourceSite = async function() {
 const CACHE_PREFIX = 'zaozi_data_';
 
 async function loadAllData() {
-    // 1. 获取北京时间日期作为缓存 Key
     const now = new Date();
     const utc = now.getTime() + now.getTimezoneOffset() * 60000;
     const today = new Date(utc + 8 * 3600000).toLocaleDateString('sv');
     const cacheKey = CACHE_PREFIX + today;
 
-    // 2. 尝试读取今日缓存
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
         try {
@@ -86,7 +69,6 @@ async function loadAllData() {
         }
     }
 
-    // 3. 无缓存 → 发起请求
     console.log(`📡 [${today}] 首次加载，请求数据...`);
     const allItems = [];
     for (const file of AppState.config.dataFiles) {
@@ -97,7 +79,6 @@ async function loadAllData() {
     }
     AppState.allData = allItems;
 
-    // 4. 写入今日缓存 + 自动清理旧缓存
     try {
         localStorage.setItem(cacheKey, JSON.stringify(allItems));
         Object.keys(localStorage)
@@ -113,13 +94,10 @@ async function loadAllData() {
 function applyFiltersAndRender() {
     let data = [...AppState.allData];
 
-    // 1. 搜索过滤 (优先级最高)
     if (AppState.searchQuery) {
         const searchResults = AppState.fuse.search(AppState.searchQuery);
         data = searchResults.map(r => r.item);
-    } 
-    // 2. 分类过滤
-    else if (AppState.currentCategory) {
+    } else if (AppState.currentCategory) {
         const tree = AppState.config.categoryTree;
         let targetCategories = [];
         
@@ -134,7 +112,6 @@ function applyFiltersAndRender() {
         );
     }
 
-    // 3. 排序
     if (AppState.sortMode === 'date') {
         data.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     } else {
@@ -147,86 +124,6 @@ function applyFiltersAndRender() {
     updateStatusUI();
     renderPage();
 }
-
-// ========== 移动端分类抽屉交互 ==========
-const mobileDrawer = document.getElementById('mobile-category-drawer');
-const mobileOverlay = document.getElementById('mobile-category-overlay');
-const mobileDrawerClose = document.getElementById('mobile-drawer-close');
-const mobileTree = document.getElementById('mobile-category-tree');
-const mobileResetBtn = document.getElementById('mobile-btn-reset-category');
-const desktopTree = document.getElementById('category-tree');
-
-// 打开抽屉
-function openMobileDrawer() {
-    syncMobileCategoryTree();
-    mobileDrawer.classList.remove('-translate-x-full');
-    mobileOverlay.classList.remove('hidden');
-}
-
-// 关闭抽屉
-function closeMobileDrawer() {
-    mobileDrawer.classList.add('-translate-x-full');
-    mobileOverlay.classList.add('hidden');
-}
-
-// 同步桌面端分类树到移动端
-function syncMobileCategoryTree() {
-    if (desktopTree && mobileTree) {
-        mobileTree.innerHTML = desktopTree.innerHTML;
-    }
-}
-
-// 关闭按钮
-if (mobileDrawerClose) {
-    mobileDrawerClose.addEventListener('click', closeMobileDrawer);
-}
-
-// 点击遮罩关闭
-if (mobileOverlay) {
-    mobileOverlay.addEventListener('click', closeMobileDrawer);
-}
-
-// 移动端点击分类项 → 区分父/子分类
-if (mobileTree) {
-    mobileTree.addEventListener('click', (e) => {
-        // 点击子分类：触发筛选 + 关闭抽屉
-        const childItem = e.target.closest('.child-cat');
-        if (childItem) {
-            const cat = childItem.getAttribute('data-cat');
-            const desktopItem = desktopTree.querySelector(`.child-cat[data-cat="${cat}"]`);
-            if (desktopItem) desktopItem.click();
-            closeMobileDrawer();
-            return;
-        }
-
-        // 点击父分类：在移动端面板内展开/收起子分类
-        const parentItem = e.target.closest('.parent-cat');
-        if (parentItem) {
-            const subUl = parentItem.nextElementSibling;
-            if (subUl && subUl.tagName === 'UL') {
-                subUl.classList.toggle('hidden');
-            }
-            // 切换箭头方向
-            const arrow = parentItem.querySelector('span:last-child');
-            if (arrow) {
-                arrow.style.transform = subUl.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(90deg)';
-            }
-        }
-    });
-}
-// 移动端"全部资源"按钮
-if (mobileResetBtn) {
-    mobileResetBtn.addEventListener('click', () => {
-        document.getElementById('btn-reset-category').click();
-        closeMobileDrawer();
-    });
-}
-
-const mobileBtn = document.getElementById('mobile-category-btn');
-if (mobileBtn) {
-    mobileBtn.addEventListener('click', openMobileDrawer);
-}
-
 
 // ================= 渲染逻辑 =================
 function renderPage() {
@@ -247,7 +144,6 @@ function renderPage() {
     let lastGroupLabel = '';
 
     pageData.forEach(item => {
-        // 插入分组标签
         let currentLabel = '';
         if (AppState.sortMode === 'date') {
             currentLabel = item.date || '未知日期';
@@ -264,7 +160,6 @@ function renderPage() {
             }
         }
 
-        // 渲染卡片
         const card = document.createElement('div');
         card.className = 'resource-card bg-secondary border border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-800 flex flex-col justify-between';
         card.innerHTML = `
@@ -303,33 +198,45 @@ function renderPagination(totalPages) {
     container.insertAdjacentHTML('beforeend', `<button class="${btnClass}" ${AppState.currentPage === totalPages ? 'disabled' : ''} data-page="next">下一页</button>`);
 }
 
-function renderCategoryTree() {
-    const treeContainer = document.getElementById('category-tree');
-    treeContainer.innerHTML = '';
+// ✅ 渲染父分类行
+function renderParentCategories() {
+    const bar = document.getElementById('parent-category-bar');
+    const resetBtn = document.getElementById('btn-reset-category');
+    bar.innerHTML = '';
+    bar.appendChild(resetBtn);
+
     const tree = AppState.config.categoryTree;
-
-    for (const [parent, config] of Object.entries(tree)) {
-        const parentLi = document.createElement('li');
-        parentLi.innerHTML = `
-            <div class="flex items-center justify-between group cursor-pointer p-2 rounded hover:bg-gray-700 parent-cat" data-cat="${parent}">
-                <span class="font-medium text-gray-300 group-hover:text-white">📂 ${parent}</span>
-                <span class="text-xs text-gray-500 transform transition-transform group-hover:translate-x-1">▶</span>
-            </div>
-        `;
-        
-        const subUl = document.createElement('ul');
-        subUl.className = 'ml-4 mt-1 space-y-1 hidden border-l border-gray-700 pl-2';
-        
-        config.children.forEach(child => {
-            const childLi = document.createElement('li');
-            childLi.innerHTML = `<div class="p-1.5 px-3 rounded hover:bg-gray-700 cursor-pointer text-gray-400 hover:text-white child-cat" data-cat="${child}">📄 ${child}</div>`;
-            subUl.appendChild(childLi);
-        });
-
-        parentLi.appendChild(subUl);
-        treeContainer.appendChild(parentLi);
+    for (const parent of Object.keys(tree)) {
+        const btn = document.createElement('button');
+        btn.className = 'shrink-0 px-3 py-1.5 rounded text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition whitespace-nowrap parent-cat-btn';
+        btn.dataset.cat = parent;
+        btn.textContent = parent;
+        bar.appendChild(btn);
     }
- syncMobileCategoryTree();
+}
+
+// ✅ 渲染子分类行
+function renderChildCategories(parentName) {
+    const bar = document.getElementById('child-category-bar');
+    bar.innerHTML = '';
+
+    const tree = AppState.config.categoryTree;
+    const children = tree[parentName]?.children || [];
+
+    if (children.length === 0) {
+        bar.classList.add('hidden');
+        return;
+    }
+
+    children.forEach(child => {
+        const btn = document.createElement('button');
+        btn.className = 'shrink-0 px-3 py-1.5 rounded text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white transition whitespace-nowrap child-cat-btn';
+        btn.dataset.cat = child;
+        btn.textContent = child;
+        bar.appendChild(btn);
+    });
+
+    bar.classList.remove('hidden');
 }
 
 // ================= 统计模块 =================
@@ -377,7 +284,6 @@ const StatsManager = {
         }
     },
 
-    // 防刷 PV：同一用户一天只上报一次
     recordView() {
         const today = new Date().toISOString().split('T')[0];
         const lastViewDate = localStorage.getItem('last_stats_view_date');
@@ -389,7 +295,6 @@ const StatsManager = {
         }
     },
 
-    // 记录资源点击热度
     recordClick(title) {
         if (!this.apiUrl) return;
         fetch(`${this.apiUrl}/api/stats/click`, {
@@ -398,7 +303,6 @@ const StatsManager = {
             body: JSON.stringify({ title })
         }).catch(err => console.error("上报点击失败:", err));
         
-        // 延迟刷新排行榜，提供实时反馈
         setTimeout(() => this.fetchStats(), 1000);
     }
 };
@@ -438,9 +342,7 @@ function showModal(item) {
         });
     }
 
-    // ✅ 上报点击事件
     StatsManager.recordClick(item.title);
-
     modal.classList.remove('hidden');
 }
 
@@ -450,6 +352,30 @@ function updateStatusUI() {
     
     if (statusEl) statusEl.textContent = AppState.searchQuery ? `搜索: "${AppState.searchQuery}"` : (AppState.currentCategory || '全部');
     if (countEl) countEl.textContent = AppState.filteredData.length;
+}
+
+// ✅ 更新分类激活样式
+function updateCategoryActiveUI(activeCat) {
+    // 清除所有激活状态
+    document.querySelectorAll('.parent-cat-btn, .child-cat-btn, #btn-reset-category').forEach(el => {
+        el.classList.remove('category-active', 'bg-accent', 'text-white');
+        if (el.classList.contains('parent-cat-btn')) el.classList.add('text-gray-300');
+        else if (el.classList.contains('child-cat-btn')) el.classList.add('text-gray-400');
+        else el.classList.add('text-accent');
+    });
+
+    if (!activeCat) {
+        const resetBtn = document.getElementById('btn-reset-category');
+        resetBtn.classList.remove('text-accent');
+        resetBtn.classList.add('category-active');
+        return;
+    }
+
+    const matched = document.querySelector(`[data-cat="${activeCat}"]`);
+    if (matched) {
+        matched.classList.remove('text-gray-300', 'text-gray-400');
+        matched.classList.add('category-active');
+    }
 }
 
 function bindEvents() {
@@ -477,38 +403,50 @@ function bindEvents() {
         applyFiltersAndRender();
     };
 
-    // 3. 分类点击事件 (事件委托)
-    document.getElementById('category-tree').addEventListener('click', (e) => {
-        const target = e.target.closest('[data-cat]');
-        if (!target) return;
-        
-        if (target.classList.contains('parent-cat')) {
-            const subUl = target.nextElementSibling;
-            subUl.classList.toggle('hidden');
-            const arrow = target.querySelector('span:last-child');
-            arrow.textContent = subUl.classList.contains('hidden') ? '▶' : '▼';
-        }
-        
-        AppState.currentCategory = target.dataset.cat;
+    // ✅ 3. 父分类点击
+    document.getElementById('parent-category-bar').addEventListener('click', (e) => {
+        const btn = e.target.closest('.parent-cat-btn');
+        if (!btn) return;
+
+        const cat = btn.dataset.cat;
+        AppState.currentCategory = cat;
         AppState.searchQuery = '';
         document.getElementById('search-input').value = '';
-        
-        document.querySelectorAll('#category-tree [data-cat]').forEach(el => el.classList.remove('category-active'));
-        target.classList.add('category-active');
-        
+
+        // 高亮父分类
+        updateCategoryActiveUI(cat);
+        // 展开对应子分类行
+        renderChildCategories(cat);
         applyFiltersAndRender();
     });
 
-    // 4. 重置分类
+    // ✅ 4. 子分类点击
+    document.getElementById('child-category-bar').addEventListener('click', (e) => {
+        const btn = e.target.closest('.child-cat-btn');
+        if (!btn) return;
+
+        const cat = btn.dataset.cat;
+        AppState.currentCategory = cat;
+        AppState.searchQuery = '';
+        document.getElementById('search-input').value = '';
+
+        updateCategoryActiveUI(cat);
+        applyFiltersAndRender();
+    });
+
+    // 5. 重置分类
     document.getElementById('btn-reset-category').onclick = () => {
         AppState.currentCategory = null;
         AppState.searchQuery = '';
         document.getElementById('search-input').value = '';
-        document.querySelectorAll('#category-tree [data-cat]').forEach(el => el.classList.remove('category-active'));
+        updateCategoryActiveUI(null);
+        // 隐藏子分类行
+        document.getElementById('child-category-bar').classList.add('hidden');
+        document.getElementById('child-category-bar').innerHTML = '';
         applyFiltersAndRender();
     };
 
-    // 5. 分页点击 (事件委托)
+    // 6. 分页点击
     document.getElementById('pagination').addEventListener('click', (e) => {
         const btn = e.target.closest('[data-page]');
         if (!btn || btn.disabled) return;
@@ -524,10 +462,9 @@ function bindEvents() {
         document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // 6. 弹窗关闭
+    // 7. 弹窗关闭
     document.getElementById('modal-close').onclick = () => document.getElementById('modal').classList.add('hidden');
     document.getElementById('modal').onclick = (e) => {
         if (e.target.id === 'modal') document.getElementById('modal').classList.add('hidden');
     };
 }
-

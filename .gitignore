@@ -1,14 +1,14 @@
-# 系统/编辑器缓存
+cat > .gitignore << 'EOF'
+# 原始数据（含敏感信息，不要上传）
+*.xlsx
+raw_data/
+
+# Python 缓存
+__pycache__/
+*.pyc
+.env
+
+# 系统文件
 .DS_Store
 Thumbs.db
-*.swp
-.vscode/
-.idea/
-
-# Node 依赖（如果有）
-node_modules/
-
-# ⚠️ 绝对不要上传的敏感文件
-.env
-wrangler.toml
-*.key
+EOF

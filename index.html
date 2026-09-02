@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>内部网盘资源库</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fuse.js 模糊搜索库 -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
     <link rel="stylesheet" href="style.css">
     <script>
@@ -27,20 +25,16 @@
 </head>
 <body class="bg-primary text-gray-200 min-h-screen flex flex-col">
 
-    <!-- 🛡️ 访问验证模态框 (暗色主题适配) -->
+    <!-- 🛡️ 访问验证模态框 -->
     <div id="accessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(6px);">
         <div style="background:#1e293b; border:1px solid #334155; border-radius:16px; padding:2rem; max-width:400px; width:calc(100% - 2rem); box-shadow:0 20px 60px rgba(0,0,0,0.5); animation:modalIn 0.3s ease;">
             <div style="font-size:1.25rem; font-weight:700; color:#f8fafc; text-align:center; margin-bottom:1.5rem;">🔒 请输入访问码继续</div>
-            
             <a id="accessLink" href="#" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; width:100%; padding:0.75rem; background:#3b82f6; color:#fff; border-radius:10px; font-weight:700; text-decoration:none; margin-bottom:1.5rem; transition:background 0.2s;">
                 <span style="margin-right:0.5rem;">👉</span> 点击获取 <span id="linkDate" style="margin-left:0.25rem;"></span> 访问码
             </a>
-            
             <label for="accessCodeInput" style="display:block; font-size:0.875rem; color:#94a3b8; margin-bottom:0.5rem; font-weight:600;">请输入访问码：</label>
             <input id="accessCodeInput" type="text" placeholder="请输入访问码" maxlength="15" autocomplete="off" style="width:100%; padding:0.75rem 1rem; border:2px solid #334155; border-radius:10px; font-size:1rem; outline:none; background:#0f172a; color:#fff; box-sizing:border-box;" />
-            
             <button id="verifyBtn" style="width:100%; padding:0.85rem; background:#22c55e; color:#fff; border:none; border-radius:10px; font-size:1.1rem; font-weight:700; cursor:pointer; margin-top:1rem;">✅ 验证访问码</button>
-            
             <div id="errorText" style="color:#ef4444; font-size:0.875rem; text-align:center; margin-top:1rem; font-weight:600; display:none;"></div>
         </div>
     </div>
@@ -66,52 +60,21 @@
         </div>
     </header>
 
+    <!-- ✅ 双层横向分类导航栏 -->
+    <nav class="bg-secondary border-b border-gray-700 sticky top-[73px] z-40 shadow-md">
+        <!-- 第一行：父分类 -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar px-4 py-2 border-b border-gray-700/50" id="parent-category-bar">
+            <button id="btn-reset-category" class="shrink-0 px-3 py-1.5 rounded text-sm font-medium text-accent hover:bg-gray-700 transition category-active">📂 全部</button>
+            <!-- JS 动态渲染父分类 -->
+        </div>
+        <!-- 第二行：子分类（默认隐藏，点击父分类后显示） -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar px-4 py-2 hidden" id="child-category-bar">
+            <!-- JS 动态渲染子分类 -->
+        </div>
+    </nav>
+
     <div class="flex flex-1 overflow-hidden">
-<!-- 手机端打开分类抽屉的按钮 -->
-   <button id="mobile-category-btn" 
-        class="md:hidden fixed top-4 left-4 z-50 px-3 py-2 rounded-lg bg-accent text-white shadow-lg flex items-center gap-1.5 text-sm font-medium">
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
-    </svg>
-    分类
-</button>
-
-
-<!-- 移动端分类抽屉（左侧滑出） -->
-<!-- 遮罩层 -->
-<div id="mobile-category-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" aria-hidden="true"></div>
-
-<!-- 抽屉面板 -->
-<aside id="mobile-category-drawer" 
-       class="fixed top-0 left-0 h-full w-72 bg-[var(--bg-primary,#1a1a2e)] border-r border-gray-700 z-50 transform -translate-x-full transition-transform duration-300 md:hidden overflow-y-auto">
-    <div class="flex items-center justify-between p-4 border-b border-gray-700">
-        <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">资源分类</h2>
-        <button id="mobile-drawer-close" class="p-1 rounded hover:bg-gray-700 text-gray-400 hover:text-white">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-        </button>
-    </div>
-    <div class="p-4">
-        <button id="mobile-btn-reset-category" class="w-full text-left py-2 px-3 rounded mb-2 hover:bg-gray-700 text-accent font-medium text-sm">📂 全部资源</button>
-        <ul id="mobile-category-tree" class="space-y-1 text-sm">
-            <!-- JS 动态克隆 -->
-        </ul>
-    </div>
-</aside>
-
-        <!-- 侧边栏：分类树 -->
-        <aside class="w-64 bg-secondary border-r border-gray-700 p-4 overflow-y-auto hidden md:block">
-            <h2 class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">资源分类</h2>
-            <button id="btn-reset-category" class="w-full text-left py-2 px-3 rounded mb-2 hover:bg-gray-700 text-accent font-medium text-sm">📂 全部资源</button>
-            <ul id="category-tree" class="space-y-1 text-sm">
-                <!-- JS 动态渲染 -->
-            </ul>
-        </aside>
-
-        <!-- 主内容区 -->
         <main class="flex-1 p-6 overflow-y-auto" id="main-content">
-            <!-- 控制栏 -->
             <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
                 <div class="text-sm text-gray-400">
                     当前状态：<span id="current-status" class="text-white font-medium">全部</span> 
@@ -124,32 +87,24 @@
                 </div>
             </div>
 
-            <!-- 卡片网格容器 -->
-            <div id="card-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
-                <!-- JS 动态渲染 -->
-            </div>
+            <div id="card-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8"></div>
+            <div id="pagination" class="flex justify-center items-center gap-2 mt-8 mb-12"></div>
 
-            <!-- 分页器 -->
-            <div id="pagination" class="flex justify-center items-center gap-2 mt-8 mb-12">
-                <!-- JS 动态渲染 -->
-            </div>
-
-<!-- 统计预留区 (替换原有的占位内容) -->
-<section class="mt-12 border-t border-gray-700 pt-8">
-    <h3 class="text-lg font-bold mb-4 text-gray-300">📊 统计</h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-secondary p-4 rounded-lg border border-gray-700">
-            <div class="text-gray-400 text-sm">今日访问</div>
-            <div id="stat-today-views" class="text-2xl font-bold text-white mt-1">加载中...</div>
-        </div>
-        <div class="bg-secondary p-4 rounded-lg border border-gray-700">
-            <div class="text-gray-400 text-sm">热度排行 Top 5</div>
-            <ul id="stat-top-resources" class="text-sm text-gray-300 mt-2 space-y-1">
-                <li class="text-gray-500">加载中...</li>
-            </ul>
-        </div>
-    </div>
-</section>
+            <section class="mt-12 border-t border-gray-700 pt-8">
+                <h3 class="text-lg font-bold mb-4 text-gray-300">📊 统计</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-secondary p-4 rounded-lg border border-gray-700">
+                        <div class="text-gray-400 text-sm">今日访问</div>
+                        <div id="stat-today-views" class="text-2xl font-bold text-white mt-1">加载中...</div>
+                    </div>
+                    <div class="bg-secondary p-4 rounded-lg border border-gray-700">
+                        <div class="text-gray-400 text-sm">热度排行 Top 5</div>
+                        <ul id="stat-top-resources" class="text-sm text-gray-300 mt-2 space-y-1">
+                            <li class="text-gray-500">加载中...</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 

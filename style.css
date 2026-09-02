@@ -4,9 +4,13 @@
 ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-/* 分组标签样式 (日期/字母) */
+/* 隐藏横向滚动条但保留滚动功能 */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* 分组标签样式 */
 .group-label {
-    grid-column: 1 / -1; /* 占满整行 */
+    grid-column: 1 / -1;
     background: linear-gradient(90deg, rgba(59,130,246,0.1) 0%, rgba(59,130,246,0) 100%);
     border-left: 4px solid #3b82f6;
     padding: 8px 16px;
@@ -19,18 +23,16 @@
 }
 
 /* 卡片悬停动效 */
-.resource-card {
-    transition: all 0.2s ease;
-}
+.resource-card { transition: all 0.2s ease; }
 .resource-card:hover {
     transform: translateY(-2px);
     border-color: #3b82f6;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-/* 分类树激活状态 */
+/* 分类激活状态 */
 .category-active {
-    background-color: #1e3a8a;
-    color: white;
+    background-color: #3b82f6 !important;
+    color: white !important;
     font-weight: 600;
 }
