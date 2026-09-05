@@ -1,30 +1,24 @@
 {
-  "siteName": "YaLi",
-  "announcementUrl": "https://www.kdocs.cn/l/crOyXHBVm96c",
-  "messageBoardUrl": "https://tally.so/r/EkoZvB",
+  "siteName": "MoJo",
+  "announcementUrl": "https://www.kdocs.cn/l/crOyXHBVm96c1",
+  "messageBoardUrl": "https://tally.so/r/EkoZvB1",
   "pageSize": 40,
     "dataFiles": [
-    "/data/yali0906.json",
-    "/data/shuku10825.json"
+    "/data/mojo0906.json",
+    "/data/resources.json"
   ],
   "categoryTree": {
-    "日更单话": {
-      "children": ["日更单话"]
+    "短剧": {
+      "children": ["泰短剧", "AI泰短剧", "AI欧美短剧"]
     },
-    "完结漫": {
-      "children": ["完结漫", "完结漫（台版）", "完结漫（台有）", "完结漫（台无）", "完结漫（汉化）"]
+    "泰剧": {
+      "children": ["泰剧", "AI泰剧", "泰电影"]
     },
-    "连载漫": {
-      "children": ["连载漫", "连载漫（台版）", "连载漫（台有）", "连载漫（台无）", "连载漫（汉化）"]
+    "漫画": {
+      "children": ["泰漫画"]
     },
-    "韩漫小说": {
-      "children": ["韩漫小说", "韩漫小说(整理)", "韩漫小说(人翻/精翻)", "书库1"]
-    },
-    "韩漫广播剧": {
-      "children": ["韩漫广播剧", "韩抓中字"]
-    },
-    "合集": {
-      "children": ["合集", "漫画合集（作者）", "韩漫小说合集", "完结漫合集（月份）"]
+    "广播剧": {
+      "children": ["泰广播剧"]
     }
-  }
+     }
 }
