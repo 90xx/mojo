@@ -1,11 +1,15 @@
 {
   "siteName": "MoJo",
-  "dataFiles": ["/data/mojo0905.json","/data/resources.json"],
+  "dataFiles": ["/data/mojo0906.json","/data/resources.json"],
   "pageSize": 40,
   "messageBoardUrl": "https://your-message-board-url",
   "announcementUrl": "https://your-message-board-url",
   "categoryTree": {
-    "短剧": { "children": ["AI欧美短剧", "子分类A2"] },
-    "父分类B": { "children": ["子分类B1", "子分类B2", "子分类B3"] }
+    "短剧": { "children": ["AI欧美短剧", "泰短剧","AI泰短剧"] },
+    "泰剧": { "children": ["泰剧", "AI泰剧", "泰电影"] },
+    "小说": { "children": ["泰剧小说", "泰同人文"] },
+    "漫画": { "children": ["泰漫画", "AI泰剧"] },
+    "广播剧": { "children": ["泰广播剧"] },
+    "综艺": { "children": ["泰综"] }
   }
 }
