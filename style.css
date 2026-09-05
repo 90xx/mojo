@@ -1,27 +1,12 @@
 @import "tailwindcss";
 
-/* ✅ 强制开启深色模式的核心代码 */
-@layer base {
-  :root {
-    /* 强制定义深色模式的色值，无论系统设置如何 */
-    --color-primary: #0f172a;   /* 对应 bg-primary */
-    --color-secondary: #1e293b; /* 对应 bg-secondary */
-    --color-accent: #3b82f6;    /* 对应 text-accent / bg-accent */
-    --color-highlight: #f43f5e; /* 对应 text-highlight */
-    
-    /* 强制基础背景为深色 */
-    background-color: var(--color-primary);
-    color: #e2e8f0; /* 默认文字颜色 gray-200 */
-  }
-}
+/* ====== 现代泰式风格基础样式 ====== */
 
-/* ====== 以下为你的原始样式，未做任何修改 ====== */
-
-/* 自定义滚动条 */
+/* 自定义滚动条 - 原木色系 */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #0f172a; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
+::-webkit-scrollbar-track { background: #F7F5F0; }
+::-webkit-scrollbar-thumb { background: #D6CFC2; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #B8AFA0; }
 
 /* 隐藏横向滚动条但保留滚动功能 */
 .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -30,12 +15,12 @@
 /* 分组标签样式 */
 .group-label {
     grid-column: 1 / -1;
-    background: linear-gradient(90deg, rgba(59,130,246,0.1) 0%, rgba(59,130,246,0) 100%);
-    border-left: 4px solid #3b82f6;
+    background: linear-gradient(90deg, rgba(74,140,111,0.08) 0%, rgba(74,140,111,0) 100%);
+    border-left: 4px solid #4A8C6F;
     padding: 8px 16px;
     font-size: 14px;
     font-weight: bold;
-    color: #93c5fd;
+    color: #2C5E43;
     border-radius: 0 4px 4px 0;
     margin-top: 12px;
     margin-bottom: 4px;
@@ -45,17 +30,14 @@
 .resource-card { transition: all 0.2s ease; }
 .resource-card:hover {
     transform: translateY(-2px);
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    border-color: #4A8C6F;
+    box-shadow: 0 4px 12px rgba(120, 113, 100, 0.15);
 }
 
 /* 分类激活状态 */
 .category-active {
-    background-color: #3b82f6 !important;
+    background: linear-gradient(135deg, #2C5E43 0%, #4A8C6F 50%, #D4A373 100%) !important;
     color: white !important;
     font-weight: 600;
+    border-color: transparent !important;
 }
-
-.bg-accent { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
-.text-accent { color: #4f46e5; }
-.category-active { background-color: #eef2ff; color: #4f46e5; border-color: #c7d2fe; }

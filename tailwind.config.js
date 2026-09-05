@@ -5,14 +5,18 @@ module.exports = {
     "./app.js",
     "./verify.js"
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        primary: '#0f172a',
-        secondary: '#1e293b',
-        accent: '#3b82f6',
-        highlight: '#f43f5e'
+        // 现代泰式自然色系
+        thai: {
+          cream: '#F7F5F0',
+          teak: '#D4A373',
+          forest: '#2C5E43',
+          leaf: '#4A8C6F',
+          terracotta: '#E27D60',
+          mango: '#E9C46A'
+        }
       }
     }
   },

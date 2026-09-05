@@ -1,4 +1,3 @@
-
 // ================= 状态管理 =================
 const AppState = {
     allData: [],
@@ -125,8 +124,8 @@ function applyFiltersAndRender() {
     renderPage();
 }
 
-// ================= 标签颜色映射（少女粉主题 - 高饱和） =================
-const TAG_COLORS = ['tag-rose', 'tag-pink', 'tag-amber', 'tag-sky', 'tag-lavender', 'tag-mint'];
+// ================= 标签颜色映射（现代泰式自然色系） =================
+const TAG_COLORS = ['tag-terracotta', 'tag-mango', 'tag-sky', 'tag-orchid', 'tag-mint', 'tag-teak'];
 function getTagColorClass(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -144,7 +143,7 @@ function renderPage() {
     const pageData = AppState.filteredData.slice(startIdx, endIdx);
 
     if (pageData.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center py-20 text-pink-400 text-lg font-medium">🔍 没有找到匹配的资源</div>';
+        grid.innerHTML = '<div class="col-span-full text-center py-20 text-stone-400 text-lg font-medium">🌿 没有找到匹配的资源</div>';
         renderPagination(0);
         return;
     }
@@ -197,7 +196,7 @@ function renderPagination(totalPages) {
     
     let lastPage = 0;
     sortedPages.forEach(p => {
-        if (p - lastPage > 1) container.insertAdjacentHTML('beforeend', `<span class="px-2 text-pink-400 text-sm font-semibold">...</span>`);
+        if (p - lastPage > 1) container.insertAdjacentHTML('beforeend', `<span class="px-2 text-stone-400 text-sm font-semibold">...</span>`);
         const isActive = p === AppState.currentPage;
         container.insertAdjacentHTML('beforeend', `<button class="page-btn ${isActive ? 'page-active' : ''}" data-page="${p}">${p}</button>`);
         lastPage = p;
@@ -206,7 +205,6 @@ function renderPagination(totalPages) {
     container.insertAdjacentHTML('beforeend', `<button class="page-btn" ${AppState.currentPage === totalPages ? 'disabled' : ''} data-page="next">下一页</button>`);
 }
 
-// ✅ 渲染父分类行
 function renderParentCategories() {
     const bar = document.getElementById('parent-category-bar');
     const resetBtn = document.getElementById('btn-reset-category');
@@ -216,14 +214,13 @@ function renderParentCategories() {
     const tree = AppState.config.categoryTree;
     for (const parent of Object.keys(tree)) {
         const btn = document.createElement('button');
-        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-pink-700 border border-pink-300 hover:border-pink-500 hover:text-pink-800 hover:bg-pink-100 transition whitespace-nowrap parent-cat-btn';
+        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 hover:border-emerald-400 hover:text-emerald-800 hover:bg-emerald-50 transition whitespace-nowrap parent-cat-btn';
         btn.dataset.cat = parent;
         btn.textContent = parent;
         bar.appendChild(btn);
     }
 }
 
-// ✅ 渲染子分类行
 function renderChildCategories(parentName) {
     const bar = document.getElementById('child-category-bar');
     bar.innerHTML = '';
@@ -238,7 +235,7 @@ function renderChildCategories(parentName) {
 
     children.forEach(child => {
         const btn = document.createElement('button');
-        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-pink-600 border border-pink-300 hover:border-rose-500 hover:text-rose-700 hover:bg-rose-100 transition whitespace-nowrap child-cat-btn';
+        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-600 border border-stone-300 hover:border-teal-400 hover:text-teal-700 hover:bg-teal-50 transition whitespace-nowrap child-cat-btn';
         btn.dataset.cat = child;
         btn.textContent = child;
         bar.appendChild(btn);
@@ -254,33 +251,27 @@ function showModal(item) {
     
     const meta = document.getElementById('modal-meta');
     meta.innerHTML = `
-        <span class="bg-pink-100 text-pink-700 border border-pink-300 px-2.5 py-1 rounded-lg font-semibold">📅 ${item.date}</span>
-        ${(item.categories || []).map(c => `<span class="bg-rose-100 text-rose-700 border border-rose-300 px-2.5 py-1 rounded-lg font-semibold">🏷️ ${c}</span>`).join('')}
+        <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-lg font-semibold">📅 ${item.date}</span>
+        ${(item.categories || []).map(c => `<span class="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-lg font-semibold">🏷️ ${c}</span>`).join('')}
     `;
 
     const linksContainer = document.getElementById('modal-links');
     linksContainer.innerHTML = '';
     
     if (!item.links || item.links.length === 0) {
-        linksContainer.innerHTML = '<p class="text-pink-400 text-sm text-center py-4 font-medium">暂无有效链接</p>';
+        linksContainer.innerHTML = '<p class="text-stone-400 text-sm text-center py-4 font-medium">暂无有效链接</p>';
     } else {
         item.links.forEach(link => {
             if (link.url && link.url.startsWith('http')) {
                 linksContainer.insertAdjacentHTML('beforeend', `
-                    <a href="${link.url}" target="_blank" class="block w-full bg-pink-50 hover:bg-pink-100 border border-pink-300 hover:border-pink-500 rounded-xl p-3.5 transition text-center shadow-sm hover:shadow-md">
-                        <span class="font-bold text-pink-600 text-sm">🔗 ${link.platform}</span>
-                        ${link.note ? `<span class="text-xs text-pink-500 ml-2">(${link.note})</span>` : ''}
+                    <a href="${link.url}" target="_blank" class="block w-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 hover:border-emerald-400 rounded-xl p-3.5 transition text-center shadow-sm hover:shadow-md">
+                        <span class="font-bold text-emerald-700 text-sm">🔗 ${link.platform}</span>
                     </a>
-                `);
-            } else if (link.note) {
-                linksContainer.insertAdjacentHTML('beforeend', `
-                    <div class="bg-pink-50 border border-dashed border-pink-300 rounded-xl p-3.5 text-sm text-pink-700">
-                        <span class="font-bold text-pink-700">📌 ${link.platform} 备注:</span> ${link.note}
-                    </div>
                 `);
             }
         });
     }
+
     modal.classList.remove('hidden');
 }
 
@@ -292,14 +283,12 @@ function updateStatusUI() {
     if (countEl) countEl.textContent = AppState.filteredData.length;
 }
 
-// ✅ 更新分类激活样式
 function updateCategoryActiveUI(activeCat) {
-    // 重置所有分类按钮为默认态
     document.querySelectorAll('.parent-cat-btn').forEach(el => {
-        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-pink-700 border border-pink-300 hover:border-pink-500 hover:text-pink-800 hover:bg-pink-100 transition whitespace-nowrap parent-cat-btn';
+        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 hover:border-emerald-400 hover:text-emerald-800 hover:bg-emerald-50 transition whitespace-nowrap parent-cat-btn';
     });
     document.querySelectorAll('.child-cat-btn').forEach(el => {
-        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-pink-600 border border-pink-300 hover:border-rose-500 hover:text-rose-700 hover:bg-rose-100 transition whitespace-nowrap child-cat-btn';
+        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-600 border border-stone-300 hover:border-teal-400 hover:text-teal-700 hover:bg-teal-50 transition whitespace-nowrap child-cat-btn';
     });
 
     if (!activeCat) {
@@ -315,7 +304,6 @@ function updateCategoryActiveUI(activeCat) {
 }
 
 function bindEvents() {
-    // 1. 搜索框防抖
     let searchTimer;
     document.getElementById('search-input').addEventListener('input', (e) => {
         clearTimeout(searchTimer);
@@ -325,21 +313,19 @@ function bindEvents() {
         }, 300);
     });
 
-    // 2. 排序切换
     document.getElementById('sort-date').onclick = () => {
         AppState.sortMode = 'date';
-        document.getElementById('sort-date').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-sm whitespace-nowrap transition';
+        document.getElementById('sort-date').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-sm whitespace-nowrap transition';
         document.getElementById('sort-pinyin').className = 'sort-btn sort-btn-inactive px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition';
         applyFiltersAndRender();
     };
     document.getElementById('sort-pinyin').onclick = () => {
         AppState.sortMode = 'pinyin';
-        document.getElementById('sort-pinyin').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-sm whitespace-nowrap transition';
+        document.getElementById('sort-pinyin').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-sm whitespace-nowrap transition';
         document.getElementById('sort-date').className = 'sort-btn sort-btn-inactive px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition';
         applyFiltersAndRender();
     };
 
-    // ✅ 3. 父分类点击
     document.getElementById('parent-category-bar').addEventListener('click', (e) => {
         const btn = e.target.closest('.parent-cat-btn');
         if (!btn) return;
@@ -354,7 +340,6 @@ function bindEvents() {
         applyFiltersAndRender();
     });
 
-    // ✅ 4. 子分类点击
     document.getElementById('child-category-bar').addEventListener('click', (e) => {
         const btn = e.target.closest('.child-cat-btn');
         if (!btn) return;
@@ -368,7 +353,6 @@ function bindEvents() {
         applyFiltersAndRender();
     });
 
-    // 5. 重置分类
     document.getElementById('btn-reset-category').onclick = () => {
         AppState.currentCategory = null;
         AppState.searchQuery = '';
@@ -379,7 +363,6 @@ function bindEvents() {
         applyFiltersAndRender();
     };
 
-    // 6. 分页点击
     document.getElementById('pagination').addEventListener('click', (e) => {
         const btn = e.target.closest('[data-page]');
         if (!btn || btn.disabled) return;
@@ -395,7 +378,6 @@ function bindEvents() {
         document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // 7. 弹窗关闭
     document.getElementById('modal-close').onclick = () => document.getElementById('modal').classList.add('hidden');
     document.getElementById('modal').onclick = (e) => {
         if (e.target.id === 'modal') document.getElementById('modal').classList.add('hidden');
