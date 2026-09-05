@@ -121,7 +121,9 @@
       if (
         href.includes('tally.so') ||
          href.includes('kdocs.cn')||
+        href.includes('notion.com')||
         text.includes('新人必看') ||
+        text.includes('泰剧小说') ||
         text.includes('留言板')
       ) {
         return;
