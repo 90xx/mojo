@@ -20,6 +20,12 @@ window.initResourceSite = async function() {
         
         document.getElementById('site-title').textContent = AppState.config.siteName;
         document.getElementById('btn-message-board').href = AppState.config.messageBoardUrl;
+        // ✅ 新增：绑定泰剧小说链接
+        const novelBtn = document.getElementById('btn-novel');
+        if (novelBtn && AppState.config.novelUrl) {
+            novelBtn.href = AppState.config.novelUrl;
+        }
+
         const announceBtn = document.getElementById('btn-announcement');
         if (announceBtn) {
             if (AppState.config.announcementUrl) {
