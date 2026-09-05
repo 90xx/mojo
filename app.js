@@ -1,3 +1,4 @@
+
 // ================= 状态管理 =================
 const AppState = {
     allData: [],
@@ -124,6 +125,14 @@ function applyFiltersAndRender() {
     renderPage();
 }
 
+// ================= 标签颜色映射（少女粉主题 - 高饱和） =================
+const TAG_COLORS = ['tag-rose', 'tag-pink', 'tag-amber', 'tag-sky', 'tag-lavender', 'tag-mint'];
+function getTagColorClass(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    return TAG_COLORS[Math.abs(hash) % TAG_COLORS.length];
+}
+
 // ================= 渲染逻辑 =================
 function renderPage() {
     const grid = document.getElementById('card-grid');
@@ -135,14 +144,14 @@ function renderPage() {
     const pageData = AppState.filteredData.slice(startIdx, endIdx);
 
     if (pageData.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500 text-lg">🔍 没有找到匹配的资源</div>';
+        grid.innerHTML = '<div class="col-span-full text-center py-20 text-pink-400 text-lg font-medium">🔍 没有找到匹配的资源</div>';
         renderPagination(0);
         return;
     }
 
     let lastGroupLabel = '';
 
-    pageData.forEach(item => {
+    pageData.forEach((item, index) => {
         let currentLabel = '';
         if (AppState.sortMode === 'date') {
             currentLabel = item.date || '未知日期';
@@ -160,12 +169,14 @@ function renderPage() {
         }
 
         const card = document.createElement('div');
-        card.className = 'resource-card bg-secondary border border-gray-700/60 rounded-lg p-4 cursor-pointer hover:bg-gray-800/80 flex flex-col justify-between';
+        card.className = 'resource-card flex flex-col justify-between';
+        card.style.setProperty('--i', index);
+        const tags = (item.categories || []).slice(0, 2).map(c => 
+            `<span class="card-tag ${getTagColorClass(c)}">${c}</span>`
+        ).join('');
         card.innerHTML = `
-            <h3 class="font-medium text-gray-200 line-clamp-2 mb-2" title="${item.title}">${item.title}</h3>
-            <div class="flex flex-wrap gap-1 mt-auto">
-                ${(item.categories || []).slice(0, 2).map(c => `<span class="text-xs bg-gray-700/60 text-gray-400 px-2 py-0.5 rounded">${c}</span>`).join('')}
-            </div>
+            <h3 class="line-clamp-2 mb-3" title="${item.title}">${item.title}</h3>
+            <div class="flex flex-wrap gap-1.5 mt-auto">${tags}</div>
         `;
         card.onclick = () => showModal(item);
         grid.appendChild(card);
@@ -179,22 +190,20 @@ function renderPagination(totalPages) {
     container.innerHTML = '';
     if (totalPages <= 1) return;
 
-    const btnClass = 'px-3 py-1 rounded border border-gray-600/60 text-sm hover:bg-gray-700/60 disabled:opacity-50 disabled:cursor-not-allowed';
-    const activeClass = 'bg-accent border-accent text-white hover:bg-emerald-600';
-
-    container.insertAdjacentHTML('beforeend', `<button class="${btnClass}" ${AppState.currentPage === 1 ? 'disabled' : ''} data-page="prev">上一页</button>`);
+    container.insertAdjacentHTML('beforeend', `<button class="page-btn" ${AppState.currentPage === 1 ? 'disabled' : ''} data-page="prev">上一页</button>`);
 
     const pages = new Set([1, totalPages, AppState.currentPage, AppState.currentPage - 1, AppState.currentPage + 1]);
     const sortedPages = [...pages].filter(p => p > 0 && p <= totalPages).sort((a, b) => a - b);
     
     let lastPage = 0;
     sortedPages.forEach(p => {
-        if (p - lastPage > 1) container.insertAdjacentHTML('beforeend', `<span class="px-2 text-gray-500">...</span>`);
-        container.insertAdjacentHTML('beforeend', `<button class="${btnClass} ${p === AppState.currentPage ? activeClass : ''}" data-page="${p}">${p}</button>`);
+        if (p - lastPage > 1) container.insertAdjacentHTML('beforeend', `<span class="px-2 text-pink-400 text-sm font-semibold">...</span>`);
+        const isActive = p === AppState.currentPage;
+        container.insertAdjacentHTML('beforeend', `<button class="page-btn ${isActive ? 'page-active' : ''}" data-page="${p}">${p}</button>`);
         lastPage = p;
     });
 
-    container.insertAdjacentHTML('beforeend', `<button class="${btnClass}" ${AppState.currentPage === totalPages ? 'disabled' : ''} data-page="next">下一页</button>`);
+    container.insertAdjacentHTML('beforeend', `<button class="page-btn" ${AppState.currentPage === totalPages ? 'disabled' : ''} data-page="next">下一页</button>`);
 }
 
 // ✅ 渲染父分类行
@@ -207,7 +216,7 @@ function renderParentCategories() {
     const tree = AppState.config.categoryTree;
     for (const parent of Object.keys(tree)) {
         const btn = document.createElement('button');
-        btn.className = 'shrink-0 px-3 py-1.5 rounded text-sm font-medium text-gray-300 hover:bg-gray-700/60 hover:text-white transition whitespace-nowrap parent-cat-btn';
+        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-pink-700 border border-pink-300 hover:border-pink-500 hover:text-pink-800 hover:bg-pink-100 transition whitespace-nowrap parent-cat-btn';
         btn.dataset.cat = parent;
         btn.textContent = parent;
         bar.appendChild(btn);
@@ -229,7 +238,7 @@ function renderChildCategories(parentName) {
 
     children.forEach(child => {
         const btn = document.createElement('button');
-        btn.className = 'shrink-0 px-3 py-1.5 rounded text-sm font-medium text-gray-400 hover:bg-gray-700/60 hover:text-white transition whitespace-nowrap child-cat-btn';
+        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-pink-600 border border-pink-300 hover:border-rose-500 hover:text-rose-700 hover:bg-rose-100 transition whitespace-nowrap child-cat-btn';
         btn.dataset.cat = child;
         btn.textContent = child;
         bar.appendChild(btn);
@@ -245,34 +254,33 @@ function showModal(item) {
     
     const meta = document.getElementById('modal-meta');
     meta.innerHTML = `
-        <span class="bg-emerald-900/40 text-emerald-300 px-2 py-1 rounded">📅 ${item.date}</span>
-        ${(item.categories || []).map(c => `<span class="bg-gray-700/60 text-gray-300 px-2 py-1 rounded">🏷️ ${c}</span>`).join('')}
+        <span class="bg-pink-100 text-pink-700 border border-pink-300 px-2.5 py-1 rounded-lg font-semibold">📅 ${item.date}</span>
+        ${(item.categories || []).map(c => `<span class="bg-rose-100 text-rose-700 border border-rose-300 px-2.5 py-1 rounded-lg font-semibold">🏷️ ${c}</span>`).join('')}
     `;
 
     const linksContainer = document.getElementById('modal-links');
     linksContainer.innerHTML = '';
     
     if (!item.links || item.links.length === 0) {
-        linksContainer.innerHTML = '<p class="text-gray-500 text-sm">暂无有效链接</p>';
+        linksContainer.innerHTML = '<p class="text-pink-400 text-sm text-center py-4 font-medium">暂无有效链接</p>';
     } else {
         item.links.forEach(link => {
             if (link.url && link.url.startsWith('http')) {
                 linksContainer.insertAdjacentHTML('beforeend', `
-                    <a href="${link.url}" target="_blank" class="block w-full bg-gray-800/80 hover:bg-gray-700/80 border border-gray-600/60 rounded-lg p-3 transition text-center">
-                        <span class="font-bold text-accent">🔗 ${link.platform}</span>
-                        ${link.note ? `<span class="text-xs text-gray-400 ml-2">(${link.note})</span>` : ''}
+                    <a href="${link.url}" target="_blank" class="block w-full bg-pink-50 hover:bg-pink-100 border border-pink-300 hover:border-pink-500 rounded-xl p-3.5 transition text-center shadow-sm hover:shadow-md">
+                        <span class="font-bold text-pink-600 text-sm">🔗 ${link.platform}</span>
+                        ${link.note ? `<span class="text-xs text-pink-500 ml-2">(${link.note})</span>` : ''}
                     </a>
                 `);
             } else if (link.note) {
                 linksContainer.insertAdjacentHTML('beforeend', `
-                    <div class="bg-gray-800/40 border border-dashed border-gray-600/60 rounded-lg p-3 text-sm text-gray-400">
-                        <span class="font-bold text-gray-300">📌 ${link.platform} 备注:</span> ${link.note}
+                    <div class="bg-pink-50 border border-dashed border-pink-300 rounded-xl p-3.5 text-sm text-pink-700">
+                        <span class="font-bold text-pink-700">📌 ${link.platform} 备注:</span> ${link.note}
                     </div>
                 `);
             }
         });
     }
-
     modal.classList.remove('hidden');
 }
 
@@ -284,29 +292,30 @@ function updateStatusUI() {
     if (countEl) countEl.textContent = AppState.filteredData.length;
 }
 
+// ✅ 更新分类激活样式
 function updateCategoryActiveUI(activeCat) {
-    document.querySelectorAll('.parent-cat-btn, .child-cat-btn, #btn-reset-category').forEach(el => {
-        el.classList.remove('category-active', 'bg-accent', 'text-white');
-        if (el.classList.contains('parent-cat-btn')) el.classList.add('text-gray-300');
-        else if (el.classList.contains('child-cat-btn')) el.classList.add('text-gray-400');
-        else el.classList.add('text-accent');
+    // 重置所有分类按钮为默认态
+    document.querySelectorAll('.parent-cat-btn').forEach(el => {
+        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-pink-700 border border-pink-300 hover:border-pink-500 hover:text-pink-800 hover:bg-pink-100 transition whitespace-nowrap parent-cat-btn';
+    });
+    document.querySelectorAll('.child-cat-btn').forEach(el => {
+        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-pink-600 border border-pink-300 hover:border-rose-500 hover:text-rose-700 hover:bg-rose-100 transition whitespace-nowrap child-cat-btn';
     });
 
     if (!activeCat) {
         const resetBtn = document.getElementById('btn-reset-category');
-        resetBtn.classList.remove('text-accent');
         resetBtn.classList.add('category-active');
         return;
     }
 
     const matched = document.querySelector(`[data-cat="${activeCat}"]`);
     if (matched) {
-        matched.classList.remove('text-gray-300', 'text-gray-400');
         matched.classList.add('category-active');
     }
 }
 
 function bindEvents() {
+    // 1. 搜索框防抖
     let searchTimer;
     document.getElementById('search-input').addEventListener('input', (e) => {
         clearTimeout(searchTimer);
@@ -316,19 +325,21 @@ function bindEvents() {
         }, 300);
     });
 
-    document.getElementById('sort-date').onclick = (e) => {
+    // 2. 排序切换
+    document.getElementById('sort-date').onclick = () => {
         AppState.sortMode = 'date';
-        e.target.classList.add('bg-accent', 'text-white');
-        document.getElementById('sort-pinyin').classList.remove('bg-accent', 'text-white');
+        document.getElementById('sort-date').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-sm whitespace-nowrap transition';
+        document.getElementById('sort-pinyin').className = 'sort-btn sort-btn-inactive px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition';
         applyFiltersAndRender();
     };
-    document.getElementById('sort-pinyin').onclick = (e) => {
+    document.getElementById('sort-pinyin').onclick = () => {
         AppState.sortMode = 'pinyin';
-        e.target.classList.add('bg-accent', 'text-white');
-        document.getElementById('sort-date').classList.remove('bg-accent', 'text-white');
+        document.getElementById('sort-pinyin').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-sm whitespace-nowrap transition';
+        document.getElementById('sort-date').className = 'sort-btn sort-btn-inactive px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition';
         applyFiltersAndRender();
     };
 
+    // ✅ 3. 父分类点击
     document.getElementById('parent-category-bar').addEventListener('click', (e) => {
         const btn = e.target.closest('.parent-cat-btn');
         if (!btn) return;
@@ -343,6 +354,7 @@ function bindEvents() {
         applyFiltersAndRender();
     });
 
+    // ✅ 4. 子分类点击
     document.getElementById('child-category-bar').addEventListener('click', (e) => {
         const btn = e.target.closest('.child-cat-btn');
         if (!btn) return;
@@ -356,6 +368,7 @@ function bindEvents() {
         applyFiltersAndRender();
     });
 
+    // 5. 重置分类
     document.getElementById('btn-reset-category').onclick = () => {
         AppState.currentCategory = null;
         AppState.searchQuery = '';
@@ -366,6 +379,7 @@ function bindEvents() {
         applyFiltersAndRender();
     };
 
+    // 6. 分页点击
     document.getElementById('pagination').addEventListener('click', (e) => {
         const btn = e.target.closest('[data-page]');
         if (!btn || btn.disabled) return;
@@ -381,6 +395,7 @@ function bindEvents() {
         document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
     });
 
+    // 7. 弹窗关闭
     document.getElementById('modal-close').onclick = () => document.getElementById('modal').classList.add('hidden');
     document.getElementById('modal').onclick = (e) => {
         if (e.target.id === 'modal') document.getElementById('modal').classList.add('hidden');

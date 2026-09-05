@@ -120,6 +120,7 @@
       const text = target.textContent || '';
       if (
         href.includes('tally.so') ||
+         href.includes('kdocs.cn')||
         text.includes('新人必看') ||
         text.includes('留言板')
       ) {
