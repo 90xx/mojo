@@ -1,38 +1,33 @@
-/* 自定义滚动条 */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #0f172a; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
+::-webkit-scrollbar-track { background: #1a1f2e; }
+::-webkit-scrollbar-thumb { background: #3d4560; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #4f5a78; }
 
-/* 隐藏横向滚动条但保留滚动功能 */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* 分组标签样式 */
 .group-label {
     grid-column: 1 / -1;
-    background: linear-gradient(90deg, rgba(59,130,246,0.1) 0%, rgba(59,130,246,0) 100%);
-    border-left: 4px solid #3b82f6;
+    background: linear-gradient(90deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0) 100%);
+    border-left: 4px solid #10b981;
     padding: 8px 16px;
     font-size: 14px;
     font-weight: bold;
-    color: #93c5fd;
+    color: #6ee7b7;
     border-radius: 0 4px 4px 0;
     margin-top: 12px;
     margin-bottom: 4px;
 }
 
-/* 卡片悬停动效 */
 .resource-card { transition: all 0.2s ease; }
 .resource-card:hover {
     transform: translateY(-2px);
-    border-color: #3b82f6;
+    border-color: #10b981;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-/* 分类激活状态 */
 .category-active {
-    background-color: #3b82f6 !important;
+    background-color: #10b981 !important;
     color: white !important;
     font-weight: 600;
 }

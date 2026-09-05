@@ -120,7 +120,7 @@
       const text = target.textContent || '';
       if (
         href.includes('tally.so') ||
-        text.includes('公告') ||
+        text.includes('新人必看') ||
         text.includes('留言板')
       ) {
         return;
