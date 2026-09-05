@@ -1,6 +1,6 @@
 {
   "siteName": "MoJo",
-  "dataFiles": ["mojo0905.json"],
+  "dataFiles": ["mojo0905.json","resources.json"],
   "pageSize": 40,
   "messageBoardUrl": "https://your-message-board-url",
   "announcementUrl": "https://your-message-board-url",
