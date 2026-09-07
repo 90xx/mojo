@@ -1,5 +1,5 @@
 {
-  "siteName": "MoJo",
+  "siteName": "NM",
   "announcementUrl": "https://www.kdocs.cn/l/crOyXHBVm96c1",
   "messageBoardUrl": "https://tally.so/r/EkoZvB1",
   "novelUrl": "https://app.notion.com/p/3c7472dfb99d807b9f30df7e28cf442b?v=3c7472dfb99d80ca8e3b000c18a95a8f&source=copy_link", 
@@ -9,11 +9,11 @@
     "/data/resources.json"
   ],
   "categoryTree": {
-    "短剧": {
-      "children": ["泰短剧", "AI泰短剧", "AI欧美短剧"]
+    "日剧": {
+      "children": ["日剧"]
     },
-    "泰剧": {
-      "children": ["泰剧", "AI泰剧", "泰电影"]
+    "漫画": {
+      "children": ["日剧漫画"]
     },
     "漫画": {
       "children": ["泰漫画"]
