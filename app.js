@@ -20,6 +20,13 @@ window.initResourceSite = async function() {
         
         document.getElementById('site-title').textContent = AppState.config.siteName;
         document.getElementById('btn-message-board').href = AppState.config.messageBoardUrl;
+       
+        // ✅ 新增：绑定取码教程链接
+const tutorialBtn = document.getElementById('btn-tutorial');
+if (tutorialBtn && AppState.config.tutorialUrl) {
+    tutorialBtn.href = AppState.config.tutorialUrl;
+}
+
         // ✅ 新增：绑定泰剧小说链接
         const novelBtn = document.getElementById('btn-novel');
         if (novelBtn && AppState.config.novelUrl) {
