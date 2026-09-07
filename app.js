@@ -20,6 +20,11 @@ window.initResourceSite = async function() {
         
         document.getElementById('site-title').textContent = AppState.config.siteName;
         document.getElementById('btn-message-board').href = AppState.config.messageBoardUrl;
+        // ✅ 新增：绑定泰剧小说链接
+        const novelBtn = document.getElementById('btn-novel');
+        if (novelBtn && AppState.config.novelUrl) {
+            novelBtn.href = AppState.config.novelUrl;
+        }
 
         const announceBtn = document.getElementById('btn-announcement');
         if (announceBtn) {
@@ -125,8 +130,8 @@ function applyFiltersAndRender() {
     renderPage();
 }
 
-// ================= 标签颜色映射（现代日漫配色） =================
-const TAG_COLORS = ['tag-indigo', 'tag-sakura', 'tag-sky', 'tag-lavender', 'tag-mint', 'tag-slate'];
+// ================= 标签颜色映射（现代泰式自然色系） =================
+const TAG_COLORS = ['tag-terracotta', 'tag-mango', 'tag-sky', 'tag-orchid', 'tag-mint', 'tag-teak'];
 function getTagColorClass(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -144,7 +149,7 @@ function renderPage() {
     const pageData = AppState.filteredData.slice(startIdx, endIdx);
 
     if (pageData.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center py-20 text-slate-400 text-lg font-medium">🌿 没有找到匹配的资源</div>';
+        grid.innerHTML = '<div class="col-span-full text-center py-20 text-stone-400 text-lg font-medium">🌿 没有找到匹配的资源</div>';
         renderPagination(0);
         return;
     }
@@ -197,7 +202,7 @@ function renderPagination(totalPages) {
     
     let lastPage = 0;
     sortedPages.forEach(p => {
-        if (p - lastPage > 1) container.insertAdjacentHTML('beforeend', `<span class="px-2 text-slate-400 text-sm font-semibold">...</span>`);
+        if (p - lastPage > 1) container.insertAdjacentHTML('beforeend', `<span class="px-2 text-stone-400 text-sm font-semibold">...</span>`);
         const isActive = p === AppState.currentPage;
         container.insertAdjacentHTML('beforeend', `<button class="page-btn ${isActive ? 'page-active' : ''}" data-page="${p}">${p}</button>`);
         lastPage = p;
@@ -215,7 +220,7 @@ function renderParentCategories() {
     const tree = AppState.config.categoryTree;
     for (const parent of Object.keys(tree)) {
         const btn = document.createElement('button');
-        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-700 border border-slate-300 hover:border-blue-400 hover:text-blue-800 hover:bg-blue-50 transition whitespace-nowrap parent-cat-btn';
+        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 hover:border-emerald-400 hover:text-emerald-800 hover:bg-emerald-50 transition whitespace-nowrap parent-cat-btn';
         btn.dataset.cat = parent;
         btn.textContent = parent;
         bar.appendChild(btn);
@@ -236,7 +241,7 @@ function renderChildCategories(parentName) {
 
     children.forEach(child => {
         const btn = document.createElement('button');
-        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-300 hover:border-indigo-400 hover:text-indigo-700 hover:bg-indigo-50 transition whitespace-nowrap child-cat-btn';
+        btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-600 border border-stone-300 hover:border-teal-400 hover:text-teal-700 hover:bg-teal-50 transition whitespace-nowrap child-cat-btn';
         btn.dataset.cat = child;
         btn.textContent = child;
         bar.appendChild(btn);
@@ -252,21 +257,21 @@ function showModal(item) {
     
     const meta = document.getElementById('modal-meta');
     meta.innerHTML = `
-        <span class="bg-blue-50 text-blue-800 border border-blue-200 px-2.5 py-1 rounded-lg font-semibold">📅 ${item.date}</span>
-        ${(item.categories || []).map(c => `<span class="bg-pink-50 text-pink-800 border border-pink-200 px-2.5 py-1 rounded-lg font-semibold">🏷️ ${c}</span>`).join('')}
+        <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-lg font-semibold">📅 ${item.date}</span>
+        ${(item.categories || []).map(c => `<span class="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-lg font-semibold">🏷️ ${c}</span>`).join('')}
     `;
 
     const linksContainer = document.getElementById('modal-links');
     linksContainer.innerHTML = '';
     
     if (!item.links || item.links.length === 0) {
-        linksContainer.innerHTML = '<p class="text-slate-400 text-sm text-center py-4 font-medium">暂无有效链接</p>';
+        linksContainer.innerHTML = '<p class="text-stone-400 text-sm text-center py-4 font-medium">暂无有效链接</p>';
     } else {
         item.links.forEach(link => {
             if (link.url && link.url.startsWith('http')) {
                 linksContainer.insertAdjacentHTML('beforeend', `
-                    <a href="${link.url}" target="_blank" class="block w-full bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-400 rounded-xl p-3.5 transition text-center shadow-sm hover:shadow-md">
-                        <span class="font-bold text-blue-700 text-sm">🔗 ${link.platform}</span>
+                    <a href="${link.url}" target="_blank" class="block w-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 hover:border-emerald-400 rounded-xl p-3.5 transition text-center shadow-sm hover:shadow-md">
+                        <span class="font-bold text-emerald-700 text-sm">🔗 ${link.platform}</span>
                     </a>
                 `);
             }
@@ -286,10 +291,10 @@ function updateStatusUI() {
 
 function updateCategoryActiveUI(activeCat) {
     document.querySelectorAll('.parent-cat-btn').forEach(el => {
-        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-700 border border-slate-300 hover:border-blue-400 hover:text-blue-800 hover:bg-blue-50 transition whitespace-nowrap parent-cat-btn';
+        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 hover:border-emerald-400 hover:text-emerald-800 hover:bg-emerald-50 transition whitespace-nowrap parent-cat-btn';
     });
     document.querySelectorAll('.child-cat-btn').forEach(el => {
-        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-300 hover:border-indigo-400 hover:text-indigo-700 hover:bg-indigo-50 transition whitespace-nowrap child-cat-btn';
+        el.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-600 border border-stone-300 hover:border-teal-400 hover:text-teal-700 hover:bg-teal-50 transition whitespace-nowrap child-cat-btn';
     });
 
     if (!activeCat) {
@@ -316,13 +321,13 @@ function bindEvents() {
 
     document.getElementById('sort-date').onclick = () => {
         AppState.sortMode = 'date';
-        document.getElementById('sort-date').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-blue-900 to-indigo-600 text-white shadow-sm whitespace-nowrap transition';
+        document.getElementById('sort-date').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-sm whitespace-nowrap transition';
         document.getElementById('sort-pinyin').className = 'sort-btn sort-btn-inactive px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition';
         applyFiltersAndRender();
     };
     document.getElementById('sort-pinyin').onclick = () => {
         AppState.sortMode = 'pinyin';
-        document.getElementById('sort-pinyin').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-blue-900 to-indigo-600 text-white shadow-sm whitespace-nowrap transition';
+        document.getElementById('sort-pinyin').className = 'sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-sm whitespace-nowrap transition';
         document.getElementById('sort-date').className = 'sort-btn sort-btn-inactive px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition';
         applyFiltersAndRender();
     };

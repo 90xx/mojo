@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NM资源</title>
+    <title>YaLi 资源库</title>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
     <link rel="stylesheet" href="dist/style.css">
     <style>
         :root {
-            /* 🎌 现代日漫风：深空蓝底色 + 樱花粉点缀 */
-            --bg-base: #F0F2F8;
-            --border-subtle: rgba(100, 116, 145, 0.15);
-            /* 靛青 → 樱花粉渐变 */
-            --accent-gradient: linear-gradient(135deg, #1E3A5F 0%, #3B6CB5 50%, #F2A7B3 100%);
-            --card-shadow: 0 2px 10px rgba(100, 116, 145, 0.08), 0 1px 3px rgba(0,0,0,0.04);
-            --card-shadow-hover: 0 12px 32px rgba(59, 108, 181, 0.18), 0 4px 12px rgba(0,0,0,0.04);
+            /* 🌿 现代泰式：温暖米白底色 */
+            --bg-base: #F7F5F0;
+            --border-subtle: rgba(120, 113, 100, 0.15);
+            /* 热带植物绿 → 柚木色渐变 */
+            --accent-gradient: linear-gradient(135deg, #2C5E43 0%, #4A8C6F 50%, #D4A373 100%);
+            --card-shadow: 0 2px 10px rgba(120, 113, 100, 0.08), 0 1px 3px rgba(0,0,0,0.04);
+            --card-shadow-hover: 0 12px 32px rgba(120, 113, 100, 0.15), 0 4px 12px rgba(0,0,0,0.04);
             --breath-duration: 4s;
         }
         body { background-color: var(--bg-base); }
@@ -25,40 +25,40 @@
             50% { box-shadow: var(--card-shadow-hover); }
         }
 
-        #accessModal input:focus { border-color: #3B6CB5 !important; box-shadow: 0 0 0 3px rgba(59, 108, 181, 0.2) !important; }
+        #accessModal input:focus { border-color: #2C5E43 !important; box-shadow: 0 0 0 3px rgba(44, 94, 67, 0.2) !important; }
         #accessLink:hover { filter: brightness(1.05); }
         #verifyBtn:hover { filter: brightness(1.05); }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* 🎌 日期分组标题 - 日漫风 */
+        /* 🌿 日期分组标题 - 泰式自然风 */
         .group-label {
             grid-column: 1 / -1;
             font-size: 0.8rem;
             font-weight: 700;
-            color: #1E3A5F;
-            background: linear-gradient(90deg, #E4ECF7 0%, #F0F2F8 100%);
-            border-left: 4px solid #3B6CB5;
+            color: #2C5E43;
+            background: linear-gradient(90deg, #E8F0E4 0%, #F7F5F0 100%);
+            border-left: 4px solid #4A8C6F;
             padding: 0.5rem 1rem;
             border-radius: 0 8px 8px 0;
             margin: 0.75rem 0 0.25rem;
             letter-spacing: 0.02em;
         }
 
-        /* 🎌 分类激活态 - 靛青渐变 */
+        /* 🌿 分类激活态 - 热带绿渐变 */
         .category-active {
             background: var(--accent-gradient) !important;
             color: #fff !important;
             border-color: transparent !important;
-            box-shadow: 0 2px 10px rgba(30, 58, 95, 0.3) !important;
+            box-shadow: 0 2px 10px rgba(44, 94, 67, 0.3) !important;
         }
 
-        /* 🎌 资源卡片 - 干净利落质感 */
+        /* 🌿 资源卡片 - 藤编/原木质感 */
         .resource-card {
             background: #ffffff;
-            border: 1.5px solid #DDE3ED;
-            border-radius: 14px;
+            border: 1.5px solid #E5E0D5;
+            border-radius: 16px;
             padding: 1.1rem;
             cursor: pointer;
             transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -76,23 +76,23 @@
             background: var(--accent-gradient);
             opacity: 0;
             transition: opacity 0.35s ease;
-            border-radius: 14px 14px 0 0;
+            border-radius: 16px 16px 0 0;
         }
         .resource-card:hover::before { opacity: 1; }
         .resource-card:hover {
-            border-color: #3B6CB5;
+            border-color: #4A8C6F;
             box-shadow: var(--card-shadow-hover);
             transform: translateY(-3px);
             animation: none;
         }
         .resource-card h3 {
-            color: #2D3748;
+            color: #3D3830;
             font-weight: 600;
             font-size: 0.9rem;
             line-height: 1.45;
         }
 
-        /* 🎌 高饱和度标签 - 日漫配色 */
+        /* 🌿 高饱和度标签 - 热带自然色系 */
         .card-tag {
             display: inline-block;
             font-size: 0.68rem;
@@ -102,84 +102,89 @@
             letter-spacing: 0.02em;
             transition: all 0.2s ease;
         }
-        .tag-indigo   { background: #3B6CB5; color: #fff; border: 1px solid #2A5290; }
-        .tag-sakura   { background: #F2A7B3; color: #6B2D3A; border: 1px solid #E08A98; }
-        .tag-sky      { background: #7EC8E3; color: #1A4F66; border: 1px solid #5BA4C9; }
-        .tag-lavender { background: #B8A9D4; color: #fff; border: 1px solid #9A88BE; }
-        .tag-mint     { background: #8DD4BF; color: #1B4332; border: 1px solid #6BC492; }
-        .tag-slate    { background: #94A3B8; color: #fff; border: 1px solid #7A8BA0; }
+        .tag-terracotta { background: #E27D60; color: #fff; border: 1px solid #C35B40; }
+        .tag-mango      { background: #E9C46A; color: #5C4B1F; border: 1px solid #D4A33A; }
+        .tag-sky        { background: #8ECAE6; color: #1A4F66; border: 1px solid #5BA4C9; }
+        .tag-orchid     { background: #B5838D; color: #fff; border: 1px solid #9A6B75; }
+        .tag-mint       { background: #95D5B2; color: #1B4332; border: 1px solid #6BC492; }
+        .tag-teak       { background: #D4A373; color: #fff; border: 1px solid #B8864E; }
 
-        /* 🎌 分页按钮 */
+        /* 🌿 分页按钮 */
         .page-btn {
             padding: 0.4rem 0.85rem;
             border-radius: 8px;
             font-size: 0.8rem;
             font-weight: 600;
-            border: 1.5px solid #CBD5E1;
-            color: #475569;
+            border: 1.5px solid #D6CFC2;
+            color: #5C5346;
             background: #fff;
             transition: all 0.25s ease;
             cursor: pointer;
         }
         .page-btn:hover:not(:disabled):not(.page-active) {
-            background: #E8EDF5;
-            border-color: #3B6CB5;
-            color: #1E3A5F;
+            background: #EDEAE3;
+            border-color: #4A8C6F;
+            color: #2C5E43;
         }
         .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .page-active {
             background: var(--accent-gradient) !important;
             color: #fff !important;
             border-color: transparent !important;
-            box-shadow: 0 2px 10px rgba(30, 58, 95, 0.3);
+            box-shadow: 0 2px 10px rgba(44, 94, 67, 0.3);
         }
 
-        .sort-btn-inactive { color: #475569; font-weight: 600; }
-        .sort-btn-inactive:hover { color: #1E3A5F; background: #E8EDF5; }
+        .sort-btn-inactive { color: #5C5346; font-weight: 600; }
+        .sort-btn-inactive:hover { color: #2C5E43; background: #EDEAE3; }
 
-        /* 🎌 搜索框 */
+        /* 🌿 搜索框 */
         #search-input {
             background: #ffffff !important;
-            border: 1.5px solid #CBD5E1 !important;
-            color: #2D3748 !important;
+            border: 1.5px solid #D6CFC2 !important;
+            color: #3D3830 !important;
             font-weight: 500 !important;
-            box-shadow: 0 2px 6px rgba(100, 116, 145, 0.05) !important;
+            box-shadow: 0 2px 6px rgba(120, 113, 100, 0.05) !important;
         }
         #search-input:focus {
-            border-color: #3B6CB5 !important;
-            box-shadow: 0 0 0 3px rgba(59, 108, 181, 0.15), 0 2px 8px rgba(0,0,0,0.04) !important;
+            border-color: #4A8C6F !important;
+            box-shadow: 0 0 0 3px rgba(74, 140, 111, 0.15), 0 2px 8px rgba(0,0,0,0.04) !important;
         }
-        #search-input::placeholder { color: #94A3B8 !important; }
+        #search-input::placeholder { color: #A39E93 !important; }
     </style>
 </head>
-<body class="text-slate-700 min-h-screen flex flex-col selection:bg-blue-200 selection:text-blue-900">
+<body class="text-stone-700 min-h-screen flex flex-col selection:bg-emerald-200 selection:text-emerald-900">
 
     <!-- 🛡️ 访问验证模态框 -->
-    <div id="accessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(30,40,60,0.3); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
-        <div style="background:#fff; border:1.5px solid #CBD5E1; border-radius:18px; padding:2.5rem; max-width:400px; width:calc(100% - 2rem); box-shadow:0 25px 60px rgba(30,40,60,0.15), inset 0 1px 0 rgba(255,255,255,0.8); animation:modalIn 0.3s ease;">
-            <div style="font-size:1.3rem; font-weight:700; color:#1E3A5F; text-align:center; margin-bottom:1.75rem; letter-spacing:-0.02em;">🔐 安全验证</div>
-            <a id="accessLink" href="#" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; width:100%; padding:0.85rem; background:var(--accent-gradient); color:#fff; border-radius:12px; font-weight:600; text-decoration:none; margin-bottom:1.5rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(30, 58, 95, 0.3);">
+    <div id="accessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(60,50,40,0.3); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
+        <div style="background:#fff; border:1.5px solid #D6CFC2; border-radius:20px; padding:2.5rem; max-width:400px; width:calc(100% - 2rem); box-shadow:0 25px 60px rgba(60,50,40,0.15), inset 0 1px 0 rgba(255,255,255,0.8); animation:modalIn 0.3s ease;">
+            <div style="font-size:1.3rem; font-weight:700; color:#2C5E43; text-align:center; margin-bottom:1.75rem; letter-spacing:-0.02em;">🌿 安全验证</div>
+            <a id="accessLink" href="#" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; width:100%; padding:0.85rem; background:var(--accent-gradient); color:#fff; border-radius:12px; font-weight:600; text-decoration:none; margin-bottom:1.5rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(44, 94, 67, 0.3);">
                 <span style="margin-right:0.5rem;">👉</span> 点击获取 <span id="linkDate" style="margin-left:0.25rem;"></span> 访问码
             </a>
-            <label for="accessCodeInput" style="display:block; font-size:0.8rem; color:#475569; margin-bottom:0.5rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">ACCESS CODE</label>
-            <input id="accessCodeInput" type="text" placeholder="请输入访问码" maxlength="15" autocomplete="off" style="width:100%; padding:0.85rem 1rem; border:1.5px solid #CBD5E1; border-radius:12px; font-size:1rem; outline:none; background:#F0F2F8; color:#2D3748; box-sizing:border-box; transition:all 0.2s;" />
-            <button id="verifyBtn" style="width:100%; padding:0.9rem; background:linear-gradient(135deg, #1E3A5F, #3B6CB5); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:1rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(30, 58, 95, 0.3);">✅ 验证并进入</button>
-            <div id="errorText" style="color:#E05252; font-size:0.85rem; text-align:center; margin-top:1rem; font-weight:600; display:none;"></div>
+            <label for="accessCodeInput" style="display:block; font-size:0.8rem; color:#5C5346; margin-bottom:0.5rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">ACCESS CODE</label>
+            <input id="accessCodeInput" type="text" placeholder="请输入访问码" maxlength="15" autocomplete="off" style="width:100%; padding:0.85rem 1rem; border:1.5px solid #D6CFC2; border-radius:12px; font-size:1rem; outline:none; background:#F7F5F0; color:#3D3830; box-sizing:border-box; transition:all 0.2s;" />
+            <button id="verifyBtn" style="width:100%; padding:0.9rem; background:linear-gradient(135deg, #2C5E43, #4A8C6F); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:1rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(44, 94, 67, 0.3);">✅ 验证并进入</button>
+            <div id="errorText" style="color:#C35B40; font-size:0.85rem; text-align:center; margin-top:1rem; font-weight:600; display:none;"></div>
         </div>
     </div>
 
     <!-- ✅ 顶栏 -->
-    <header class="backdrop-blur-xl bg-[#F0F2F8]/90 border-b border-slate-200/80 px-4 pt-3 pb-2 md:p-4 sticky top-0 z-50 flex flex-col gap-2.5 shadow-sm">
+    <header class="backdrop-blur-xl bg-[#F7F5F0]/90 border-b border-stone-200/80 px-4 pt-3 pb-2 md:p-4 sticky top-0 z-50 flex flex-col gap-2.5 shadow-sm">
         <div class="flex items-center justify-between w-full">
             <div class="w-16 md:hidden"></div>
-            <h1 id="site-title" class="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-900 to-indigo-600 text-center flex-1 tracking-tight">NingM</h1>
+            <h1 id="site-title" class="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-800 to-teal-600 text-center flex-1 tracking-tight">资源库</h1>
             <div class="flex gap-2 shrink-0">
                 <a id="btn-announcement" href="#" target="_blank"
-                   class="px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-semibold text-blue-800 hover:text-blue-900 hover:bg-blue-100 hover:border-blue-300 transition-all whitespace-nowrap">
+                   class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 hover:text-emerald-900 hover:bg-emerald-100 hover:border-emerald-300 transition-all whitespace-nowrap">
                     📢 新人必看
                 </a>
                 <a id="btn-message-board" href="#" target="_blank"
-                   class="px-3 py-1 rounded-full bg-pink-50 border border-pink-200 text-xs font-semibold text-pink-800 hover:text-pink-900 hover:bg-pink-100 hover:border-pink-300 transition-all whitespace-nowrap">
+                   class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-800 hover:text-amber-900 hover:bg-amber-100 hover:border-amber-300 transition-all whitespace-nowrap">
+                  <!-- 🌿 新增：泰剧小说按钮 -->
+            <a id="btn-novel" href="#" target="_blank"
+               class="px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-xs font-semibold text-orange-800 hover:text-orange-900 hover:bg-orange-100 hover:border-orange-300 transition-all whitespace-nowrap">
+                📖 泰剧小说
+            </a>
                     💬 留言
                 </a>
             </div>
@@ -187,22 +192,22 @@
 
         <div class="w-full">
             <input type="text" id="search-input" placeholder="🔍 搜索资源名称..."
-                   class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400/40 focus:border-blue-500 text-sm text-slate-800 placeholder-slate-400 transition-all shadow-sm">
+                   class="w-full bg-white border border-stone-300 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-400/40 focus:border-emerald-500 text-sm text-stone-800 placeholder-stone-400 transition-all shadow-sm">
         </div>
 
         <div class="w-full">
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="parent-category-bar">
-                <button id="btn-reset-category" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 transition category-active whitespace-nowrap">全部</button>
+                <button id="btn-reset-category" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 hover:bg-stone-100 transition category-active whitespace-nowrap">全部</button>
             </div>
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 hidden" id="child-category-bar"></div>
         </div>
 
         <div class="flex items-center justify-between w-full pt-0.5">
-            <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200">
-                <button id="sort-date" class="sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-blue-900 to-indigo-600 text-white shadow-sm whitespace-nowrap transition">按时间</button>
+            <div class="flex bg-stone-100 rounded-lg p-0.5 border border-stone-200">
+                <button id="sort-date" class="sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-sm whitespace-nowrap transition">按时间</button>
                 <button id="sort-pinyin" class="sort-btn sort-btn-inactive px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition">按名称</button>
             </div>
-            <span class="text-xs text-slate-500 font-semibold">共 <span id="total-count" class="text-blue-800 font-bold">0</span> 条</span>
+            <span class="text-xs text-stone-500 font-semibold">共 <span id="total-count" class="text-emerald-800 font-bold">0</span> 条</span>
         </div>
     </header>
 
@@ -214,11 +219,11 @@
     </div>
 
     <!-- 详情弹窗 -->
-    <div id="modal" class="fixed inset-0 bg-slate-900/30 backdrop-blur-md hidden z-[100] flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
-            <div class="p-6 border-b border-slate-200 flex justify-between items-start bg-gradient-to-r from-blue-50 to-indigo-50">
-                <h2 id="modal-title" class="text-xl font-bold text-slate-800 pr-4 tracking-tight"></h2>
-                <button id="modal-close" class="text-slate-400 hover:text-slate-600 text-2xl leading-none transition">&times;</button>
+    <div id="modal" class="fixed inset-0 bg-stone-900/30 backdrop-blur-md hidden z-[100] flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-stone-200 overflow-hidden transform transition-all">
+            <div class="p-6 border-b border-stone-200 flex justify-between items-start bg-gradient-to-r from-emerald-50 to-teal-50">
+                <h2 id="modal-title" class="text-xl font-bold text-stone-800 pr-4 tracking-tight"></h2>
+                <button id="modal-close" class="text-stone-400 hover:text-stone-600 text-2xl leading-none transition">&times;</button>
             </div>
             <div class="p-6">
                 <div id="modal-meta" class="flex flex-wrap gap-2 mb-4 text-xs"></div>
