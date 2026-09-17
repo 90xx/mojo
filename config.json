@@ -7,6 +7,7 @@
   "pageSize": 40,
     "dataFiles": [
     "/data/mojo0906.json",
+    "/data/oumeiduanju0917.json",
     "/data/resources.json"
   ],
   "categoryTree": {
