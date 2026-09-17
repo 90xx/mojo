@@ -2,42 +2,253 @@
 
 /* ====== 现代泰式风格基础样式 ====== */
 
-/* 自定义滚动条 - 原木色系 */
+:root {
+    /* 🌿 现代泰式：温暖米白底色 */
+    --bg-base: #F7F5F0;
+    --border-subtle: rgba(120, 113, 100, 0.15);
+    /* 热带植物绿 → 柚木色渐变 */
+    --accent-gradient: linear-gradient(135deg, #2C5E43 0%, #4A8C6F 50%, #D4A373 100%);
+    --card-shadow: 0 2px 10px rgba(120, 113, 100, 0.08), 0 1px 3px rgba(0,0,0,0.04);
+    --card-shadow-hover: 0 12px 32px rgba(120, 113, 100, 0.15), 0 4px 12px rgba(0,0,0,0.04);
+    --breath-duration: 4s;
+}
+
+body { 
+    background-color: var(--bg-base); 
+}
+
+/* ====== 滚动条与基础布局 ====== */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: #F7F5F0; }
 ::-webkit-scrollbar-thumb { background: #D6CFC2; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #B8AFA0; }
 
-/* 隐藏横向滚动条但保留滚动功能 */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* 分组标签样式 */
+/* ====== 动画 ====== */
+@keyframes modalIn { 
+    from { transform: scale(0.95); opacity: 0; } 
+    to { transform: scale(1); opacity: 1; } 
+}
+@keyframes breathe {
+    0%, 100% { box-shadow: var(--card-shadow); }
+    50% { box-shadow: var(--card-shadow-hover); }
+}
+
+/* ====== 访问验证模态框 ====== */
+.access-modal {
+    display: none; 
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background: rgba(60,50,40,0.3); 
+    z-index: 99999; 
+    align-items: center; 
+    justify-content: center; 
+    backdrop-filter: blur(12px);
+}
+.access-modal-content {
+    background: #fff; 
+    border: 1.5px solid #D6CFC2; 
+    border-radius: 20px; 
+    padding: 2.5rem; 
+    max-width: 400px; 
+    width: calc(100% - 2rem); 
+    box-shadow: 0 25px 60px rgba(60,50,40,0.15), inset 0 1px 0 rgba(255,255,255,0.8); 
+    animation: modalIn 0.3s ease;
+}
+.access-link-btn {
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    width: 100%; 
+    padding: 0.85rem; 
+    background: var(--accent-gradient); 
+    color: #fff; 
+    border-radius: 12px; 
+    font-weight: 600; 
+    text-decoration: none; 
+    margin-bottom: 1.5rem; 
+    transition: all 0.2s; 
+    box-shadow: 0 4px 15px rgba(44, 94, 67, 0.3);
+}
+.access-link-btn:hover { filter: brightness(1.05); }
+.access-input {
+    width: 100%; 
+    padding: 0.85rem 1rem; 
+    border: 1.5px solid #D6CFC2; 
+    border-radius: 12px; 
+    font-size: 1rem; 
+    outline: none; 
+    background: #F7F5F0; 
+    color: #3D3830; 
+    box-sizing: border-box; 
+    transition: all 0.2s;
+}
+.access-input:focus { 
+    border-color: #2C5E43 !important; 
+    box-shadow: 0 0 0 3px rgba(44, 94, 67, 0.2) !important; 
+}
+.verify-btn {
+    width: 100%; 
+    padding: 0.9rem; 
+    background: linear-gradient(135deg, #2C5E43, #4A8C6F); 
+    color: #fff; 
+    border: none; 
+    border-radius: 12px; 
+    font-size: 1rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    margin-top: 1rem; 
+    transition: all 0.2s; 
+    box-shadow: 0 4px 15px rgba(44, 94, 67, 0.3);
+}
+.verify-btn:hover { filter: brightness(1.05); }
+.error-text {
+    color: #C35B40; 
+    font-size: 0.85rem; 
+    text-align: center; 
+    margin-top: 1rem; 
+    font-weight: 600; 
+    display: none;
+}
+
+/* 🎌 取码教程按钮 */
+.tutorial-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    background: linear-gradient(135deg, #1E3A5F, #3B6CB5);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 12px rgba(30, 58, 95, 0.25);
+    letter-spacing: 0.02em;
+}
+.tutorial-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(30, 58, 95, 0.35);
+}
+
+/* ====== 资源卡片与列表 ====== */
 .group-label {
     grid-column: 1 / -1;
-    background: linear-gradient(90deg, rgba(74,140,111,0.08) 0%, rgba(74,140,111,0) 100%);
-    border-left: 4px solid #4A8C6F;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 0.8rem;
+    font-weight: 700;
     color: #2C5E43;
-    border-radius: 0 4px 4px 0;
-    margin-top: 12px;
-    margin-bottom: 4px;
+    background: linear-gradient(90deg, #E8F0E4 0%, #F7F5F0 100%);
+    border-left: 4px solid #4A8C6F;
+    padding: 0.5rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.75rem 0 0.25rem;
+    letter-spacing: 0.02em;
 }
 
-/* 卡片悬停动效 */
-.resource-card { transition: all 0.2s ease; }
+.resource-card {
+    background: #ffffff;
+    border: 1.5px solid #E5E0D5;
+    border-radius: 16px;
+    padding: 1.1rem;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+    animation: breathe var(--breath-duration) ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 0.15s);
+}
+.resource-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent-gradient);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    border-radius: 16px 16px 0 0;
+}
+.resource-card:hover::before { opacity: 1; }
 .resource-card:hover {
-    transform: translateY(-2px);
     border-color: #4A8C6F;
-    box-shadow: 0 4px 12px rgba(120, 113, 100, 0.15);
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-3px);
+    animation: none;
+}
+.resource-card h3 {
+    color: #3D3830;
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1.45;
 }
 
-/* 分类激活状态 */
-.category-active {
-    background: linear-gradient(135deg, #2C5E43 0%, #4A8C6F 50%, #D4A373 100%) !important;
-    color: white !important;
+/* 🌿 高饱和度标签 - 热带自然色系 */
+.card-tag {
+    display: inline-block;
+    font-size: 0.68rem;
     font-weight: 600;
-    border-color: transparent !important;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
 }
+.tag-terracotta { background: #E27D60; color: #fff; border: 1px solid #C35B40; }
+.tag-mango      { background: #E9C46A; color: #5C4B1F; border: 1px solid #D4A33A; }
+.tag-sky        { background: #8ECAE6; color: #1A4F66; border: 1px solid #5BA4C9; }
+.tag-orchid     { background: #B5838D; color: #fff; border: 1px solid #9A6B75; }
+.tag-mint       { background: #95D5B2; color: #1B4332; border: 1px solid #6BC492; }
+.tag-teak       { background: #D4A373; color: #fff; border: 1px solid #B8864E; }
+
+/* ====== 分类与按钮状态 ====== */
+.category-active {
+    background: var(--accent-gradient) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 10px rgba(44, 94, 67, 0.3) !important;
+}
+
+.sort-btn-inactive { color: #5C5346; font-weight: 600; }
+.sort-btn-inactive:hover { color: #2C5E43; background: #EDEAE3; }
+
+/* ====== 分页与搜索 ====== */
+.page-btn {
+    padding: 0.4rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1.5px solid #D6CFC2;
+    color: #5C5346;
+    background: #fff;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+.page-btn:hover:not(:disabled):not(.page-active) {
+    background: #EDEAE3;
+    border-color: #4A8C6F;
+    color: #2C5E43;
+}
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-active {
+    background: var(--accent-gradient) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 10px rgba(44, 94, 67, 0.3);
+}
+
+#search-input {
+    background: #ffffff !important;
+    border: 1.5px solid #D6CFC2 !important;
+    color: #3D3830 !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 6px rgba(120, 113, 100, 0.05) !important;
+}
+#search-input:focus {
+    border-color: #4A8C6F !important;
+    box-shadow: 0 0 0 3px rgba(74, 140, 111, 0.15), 0 2px 8px rgba(0,0,0,0.04) !important;
+}
+#search-input::placeholder { color: #A39E93 !important; }

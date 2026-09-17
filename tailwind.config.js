@@ -1,43 +1,20 @@
-@import "tailwindcss";
-
-/* ====== 现代泰式风格基础样式 ====== */
-
-/* 自定义滚动条 - 原木色系 */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #F7F5F0; }
-::-webkit-scrollbar-thumb { background: #D6CFC2; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #B8AFA0; }
-
-/* 隐藏横向滚动条但保留滚动功能 */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* 分组标签样式 */
-.group-label {
-    grid-column: 1 / -1;
-    background: linear-gradient(90deg, rgba(74,140,111,0.08) 0%, rgba(74,140,111,0) 100%);
-    border-left: 4px solid #4A8C6F;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #2C5E43;
-    border-radius: 0 4px 4px 0;
-    margin-top: 12px;
-    margin-bottom: 4px;
-}
-
-/* 卡片悬停动效 */
-.resource-card { transition: all 0.2s ease; }
-.resource-card:hover {
-    transform: translateY(-2px);
-    border-color: #4A8C6F;
-    box-shadow: 0 4px 12px rgba(120, 113, 100, 0.15);
-}
-
-/* 分类激活状态 */
-.category-active {
-    background: linear-gradient(135deg, #2C5E43 0%, #4A8C6F 50%, #D4A373 100%) !important;
-    color: white !important;
-    font-weight: 600;
-    border-color: transparent !important;
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./index.html",
+    "./app.js",
+    "./verify.js",
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      // 如果有需要自定义的 Tailwind 主题色，可以在此处扩展
+      // 例如：
+      // colors: {
+      //   'thai-green': '#2C5E43',
+      //   'thai-teak': '#D4A373',
+      // }
+    },
+  },
+  plugins: [],
 }
