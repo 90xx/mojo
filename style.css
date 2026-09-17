@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
-/* ====== 现代深色玻璃拟态主题 - 样式系统 ====== */
+/* ====== 鲜明深色主题 - 高对比度样式系统 ====== */
 
 /* 自定义滚动条 */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #0b0f1a; }
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
 
 /* 隐藏横向滚动条 */
 .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -18,12 +18,12 @@
 /* 分组标签样式 */
 .group-label {
     grid-column: 1 / -1;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    color: #6366f1;
-    background: rgba(99, 102, 241, 0.08);
-    border-left: 3px solid #6366f1;
-    padding: 0.5rem 1rem;
+    color: #818cf8;
+    background: rgba(99, 102, 241, 0.10);
+    border-left: 4px solid #818cf8;
+    padding: 0.6rem 1rem;
     border-radius: 0 10px 10px 0;
     margin: 0.75rem 0 0.25rem;
     letter-spacing: 0.05em;
@@ -32,44 +32,32 @@
 
 /* 卡片悬停动效 */
 .resource-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #131726;
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
     border-radius: 16px;
     padding: 1.2rem;
     cursor: pointer;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 .resource-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
     opacity: 0;
-    transition: opacity 0.35s ease;
-}
-.resource-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.03), transparent);
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 .resource-card:hover {
-    border-color: rgba(99, 102, 241, 0.5);
-    background: rgba(255, 255, 255, 0.07);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 40px rgba(99, 102, 241, 0.15), 0 2px 8px rgba(0,0,0,0.3);
+    border-color: #818cf8;
+    background: #1a1f35;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2), 0 4px 12px rgba(0,0,0,0.4);
 }
 .resource-card:hover::before { opacity: 1; }
-.resource-card:hover::after { opacity: 1; }
 
 /* 分类激活状态 */
 .category-active {
@@ -77,76 +65,77 @@
     color: white !important;
     font-weight: 600;
     border-color: transparent !important;
-    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.3) !important;
+    box-shadow: 0 2px 16px rgba(129, 140, 248, 0.4) !important;
 }
 
-/* 标签颜色 - 低饱和度现代色系 */
-.tag-indigo    { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.25); }
-.tag-violet    { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.25); }
-.tag-cyan      { background: rgba(6, 182, 212, 0.15); color: #67e8f9; border: 1px solid rgba(6, 182, 212, 0.25); }
-.tag-rose      { background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.25); }
-.tag-amber     { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.25); }
-.tag-emerald   { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.25); }
+/* 标签颜色 - 高对比度鲜明色系 */
+.tag-indigo    { background: rgba(99, 102, 241, 0.20); color: #c7d2fe; border: 1.5px solid rgba(99, 102, 241, 0.35); }
+.tag-violet    { background: rgba(139, 92, 246, 0.20); color: #ddd6fe; border: 1.5px solid rgba(139, 92, 246, 0.35); }
+.tag-cyan      { background: rgba(6, 182, 212, 0.20); color: #a5f3fc; border: 1.5px solid rgba(6, 182, 212, 0.35); }
+.tag-rose      { background: rgba(244, 63, 94, 0.20); color: #fecdd3; border: 1.5px solid rgba(244, 63, 94, 0.35); }
+.tag-amber     { background: rgba(245, 158, 11, 0.20); color: #fde68a; border: 1.5px solid rgba(245, 158, 11, 0.35); }
+.tag-emerald   { background: rgba(16, 185, 129, 0.20); color: #a7f3d0; border: 1.5px solid rgba(16, 185, 129, 0.35); }
 
 /* 排序按钮 */
 .sort-btn-active {
     background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4) !important;
     color: white !important;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 }
 .sort-btn-inactive {
-    color: #94a3b8;
+    color: #cbd5e1;
     font-weight: 600;
 }
 .sort-btn-inactive:hover {
     color: #f1f5f9;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 /* 分页按钮 */
 .page-btn {
-    padding: 0.4rem 0.85rem;
+    padding: 0.45rem 1rem;
     border-radius: 10px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: #94a3b8;
-    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.04);
     transition: all 0.25s ease;
     cursor: pointer;
 }
 .page-btn:hover:not(:disabled):not(.page-active) {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(99, 102, 241, 0.4);
+    background: rgba(129, 140, 248, 0.12);
+    border-color: rgba(129, 140, 248, 0.5);
     color: #f1f5f9;
+    box-shadow: 0 0 10px rgba(129, 140, 248, 0.1);
 }
 .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 .page-active {
     background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4) !important;
     color: #fff !important;
     border-color: transparent !important;
-    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.5);
 }
 
 /* 链接按钮 */
 .link-btn {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
     color: #f1f5f9;
     transition: all 0.2s ease;
 }
 .link-btn:hover {
-    background: rgba(99, 102, 241, 0.1);
-    border-color: rgba(99, 102, 241, 0.4);
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(129, 140, 248, 0.5);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
 }
 
 /* 模态框内标签 */
 .modal-meta-tag {
-    background: rgba(99, 102, 241, 0.1) !important;
-    color: #a5b4fc !important;
-    border: 1px solid rgba(99, 102, 241, 0.2) !important;
+    background: rgba(99, 102, 241, 0.15) !important;
+    color: #c7d2fe !important;
+    border: 1.5px solid rgba(99, 102, 241, 0.3) !important;
 }
 
 /* 卡片进入动画 */
