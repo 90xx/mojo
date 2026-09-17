@@ -3,176 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoJo 资源库</title>
+    <title>YaLi 资源库</title>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
     <link rel="stylesheet" href="dist/style.css">
     <style>
-        /* ===== 清新明亮浅色主题 ===== */
         :root {
-            /* 背景色系 */
-            --bg-primary: #f0f4f8;
-            --bg-surface: #ffffff;
-            --bg-surface-hover: #f7fafc;
-            --bg-header: rgba(255, 255, 255, 0.92);
+            /* 🌿 现代泰式：温暖米白底色 */
+            --bg-base: #F7F5F0;
+            --border-subtle: rgba(120, 113, 100, 0.15);
+            /* 热带植物绿 → 柚木色渐变 */
+            --accent-gradient: linear-gradient(135deg, #2C5E43 0%, #4A8C6F 50%, #D4A373 100%);
+            --card-shadow: 0 2px 10px rgba(120, 113, 100, 0.08), 0 1px 3px rgba(0,0,0,0.04);
+            --card-shadow-hover: 0 12px 32px rgba(120, 113, 100, 0.15), 0 4px 12px rgba(0,0,0,0.04);
+            --breath-duration: 4s;
+        }
+        body { background-color: var(--bg-base); }
 
-            /* 边框 */
-            --border-primary: #e2e8f0;
-            --border-card: #e2e8f0;
-            --border-card-hover: #3b82f6;
-            --border-accent: #3b82f6;
-
-            /* 文字 */
-            --text-primary: #1a202c;
-            --text-secondary: #4a5568;
-            --text-muted: #a0aec0;
-            --text-bright: #1a202c;
-
-            /* 强调色 - 蓝紫青渐变 */
-            --accent-1: #3b82f6;
-            --accent-2: #8b5cf6;
-            --accent-3: #06b6d4;
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
-            --accent-glow: rgba(59, 130, 246, 0.25);
-
-            /* 阴影 */
-            --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-            --shadow-card-hover: 0 10px 25px rgba(59, 130, 246, 0.12), 0 4px 10px rgba(0, 0, 0, 0.06);
-            --shadow-btn: 0 2px 8px rgba(59, 130, 246, 0.25);
-            --shadow-btn-hover: 0 4px 16px rgba(59, 130, 246, 0.4);
-
-            /* 动画 */
-            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes breathe {
+            0%, 100% { box-shadow: var(--card-shadow); }
+            50% { box-shadow: var(--card-shadow-hover); }
         }
 
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            background-image:
-                radial-gradient(ellipse at 20% 0%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 100%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
-            background-attachment: fixed;
-        }
-
-        /* ===== 背景装饰光球 ===== */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.12;
-            pointer-events: none;
-            z-index: -1;
-            animation: orbFloat 30s ease-in-out infinite;
-        }
-        .bg-orb-1 {
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.15), transparent 70%);
-            top: -200px; left: -150px;
-            animation-delay: 0s;
-        }
-        .bg-orb-2 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(6, 182, 212, 0.12), transparent 70%);
-            bottom: -150px; right: -150px;
-            animation-delay: -10s;
-        }
-        .bg-orb-3 {
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.10), transparent 70%);
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: -20s;
-        }
-        @keyframes orbFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(50px, -50px) scale(1.1); }
-            66% { transform: translate(-40px, 40px) scale(0.95); }
-        }
-
-        /* ===== 滚动条 ===== */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-primary); }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+        #accessModal input:focus { border-color: #2C5E43 !important; box-shadow: 0 0 0 3px rgba(44, 94, 67, 0.2) !important; }
+        #accessLink:hover { filter: brightness(1.05); }
+        #verifyBtn:hover { filter: brightness(1.05); }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* ===== 顶栏 ===== */
-        header {
-            background: var(--bg-header);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 1px solid var(--border-primary);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        /* 🌿 日期分组标题 - 泰式自然风 */
+        .group-label {
+            grid-column: 1 / -1;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #2C5E43;
+            background: linear-gradient(90deg, #E8F0E4 0%, #F7F5F0 100%);
+            border-left: 4px solid #4A8C6F;
+            padding: 0.5rem 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 0.75rem 0 0.25rem;
+            letter-spacing: 0.02em;
         }
 
-        /* ===== 搜索框 ===== */
-        #search-input {
-            background: var(--bg-surface) !important;
-            border: 1.5px solid var(--border-primary) !important;
-            color: var(--text-primary) !important;
-            font-weight: 500 !important;
-            box-shadow: var(--shadow-card) !important;
-            transition: all var(--transition-fast) !important;
-        }
-        #search-input:focus {
-            border-color: var(--accent-1) !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12), 0 2px 12px rgba(59, 130, 246, 0.08) !important;
-            background: #fff !important;
-        }
-        #search-input::placeholder { color: var(--text-muted) !important; }
-
-        /* ===== 分类按钮 ===== */
-        .parent-cat-btn, .child-cat-btn {
-            background: var(--bg-surface) !important;
-            border: 1.5px solid var(--border-primary) !important;
-            color: var(--text-secondary) !important;
-            transition: all var(--transition-fast) !important;
-        }
-        .parent-cat-btn:hover, .child-cat-btn:hover {
-            background: #eff6ff !important;
-            border-color: #93c5fd !important;
-            color: #1e40af !important;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-        }
+        /* 🌿 分类激活态 - 热带绿渐变 */
         .category-active {
             background: var(--accent-gradient) !important;
             color: #fff !important;
             border-color: transparent !important;
-            box-shadow: 0 3px 16px var(--accent-glow) !important;
+            box-shadow: 0 2px 10px rgba(44, 94, 67, 0.3) !important;
         }
 
-        /* ===== 排序按钮 ===== */
-        .sort-btn {
-            background: transparent !important;
-            border: none !important;
-            color: var(--text-secondary) !important;
-        }
-        .sort-btn-active {
-            background: var(--accent-gradient) !important;
-            color: #fff !important;
-            box-shadow: var(--shadow-btn) !important;
-        }
-        .sort-btn-inactive:hover {
-            color: var(--text-bright) !important;
-            background: rgba(59, 130, 246, 0.08) !important;
-        }
-
-        /* ===== 资源卡片 ===== */
+        /* 🌿 资源卡片 - 藤编/原木质感 */
         .resource-card {
-            background: var(--bg-surface);
-            border: 1.5px solid var(--border-card);
+            background: #ffffff;
+            border: 1.5px solid #E5E0D5;
             border-radius: 16px;
-            padding: 1.25rem;
+            padding: 1.1rem;
             cursor: pointer;
-            transition: all var(--transition-smooth);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--card-shadow);
             position: relative;
             overflow: hidden;
-            box-shadow: var(--shadow-card);
+            animation: breathe var(--breath-duration) ease-in-out infinite;
+            animation-delay: calc(var(--i, 0) * 0.15s);
         }
         .resource-card::before {
             content: '';
@@ -181,313 +75,164 @@
             height: 3px;
             background: var(--accent-gradient);
             opacity: 0;
-            transition: opacity var(--transition-smooth);
-        }
-        .resource-card:hover {
-            border-color: var(--border-card-hover);
-            background: var(--bg-surface-hover);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-card-hover);
+            transition: opacity 0.35s ease;
+            border-radius: 16px 16px 0 0;
         }
         .resource-card:hover::before { opacity: 1; }
-
+        .resource-card:hover {
+            border-color: #4A8C6F;
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-3px);
+            animation: none;
+        }
         .resource-card h3 {
-            color: var(--text-primary) !important;
-            font-weight: 600 !important;
-            font-size: 0.95rem !important;
-            line-height: 1.5 !important;
-            letter-spacing: -0.01em;
+            color: #3D3830;
+            font-weight: 600;
+            font-size: 0.9rem;
+            line-height: 1.45;
         }
 
-        /* ===== 标签 ===== */
+        /* 🌿 高饱和度标签 - 热带自然色系 */
         .card-tag {
-            display: inline-flex;
-            align-items: center;
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 600;
             padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 600;
             letter-spacing: 0.02em;
-            transition: all var(--transition-fast);
+            transition: all 0.2s ease;
         }
-        .card-tag:hover { transform: scale(1.05); }
-        .tag-blue      { background: #dbeafe; color: #1e40af; border: 1.5px solid #93c5fd; }
-        .tag-violet    { background: #ede9fe; color: #5b21b6; border: 1.5px solid #c4b5fd; }
-        .tag-cyan      { background: #cffafe; color: #0e7490; border: 1.5px solid #67e8f9; }
-        .tag-rose      { background: #ffe4e6; color: #9f1239; border: 1.5px solid #fda4af; }
-        .tag-amber     { background: #fef3c7; color: #92400e; border: 1.5px solid #fcd34d; }
-        .tag-emerald   { background: #d1fae5; color: #065f46; border: 1.5px solid #6ee7b7; }
+        .tag-terracotta { background: #E27D60; color: #fff; border: 1px solid #C35B40; }
+        .tag-mango      { background: #E9C46A; color: #5C4B1F; border: 1px solid #D4A33A; }
+        .tag-sky        { background: #8ECAE6; color: #1A4F66; border: 1px solid #5BA4C9; }
+        .tag-orchid     { background: #B5838D; color: #fff; border: 1px solid #9A6B75; }
+        .tag-mint       { background: #95D5B2; color: #1B4332; border: 1px solid #6BC492; }
+        .tag-teak       { background: #D4A373; color: #fff; border: 1px solid #B8864E; }
 
-        /* ===== 分组标签 ===== */
-        .group-label {
-            grid-column: 1 / -1;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #1e40af;
-            background: linear-gradient(90deg, #dbeafe 0%, #f0f4f8 100%);
-            border-left: 4px solid #3b82f6;
-            padding: 0.6rem 1rem;
-            border-radius: 0 10px 10px 0;
-            margin: 0.75rem 0 0.25rem;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        /* ===== 分页按钮 ===== */
+        /* 🌿 分页按钮 */
         .page-btn {
-            padding: 0.45rem 1rem;
-            border-radius: 10px;
-            font-size: 0.82rem;
+            padding: 0.4rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
             font-weight: 600;
-            border: 1.5px solid var(--border-primary) !important;
-            color: var(--text-secondary);
-            background: var(--bg-surface) !important;
-            transition: all var(--transition-fast);
+            border: 1.5px solid #D6CFC2;
+            color: #5C5346;
+            background: #fff;
+            transition: all 0.25s ease;
             cursor: pointer;
-            box-shadow: var(--shadow-card);
         }
         .page-btn:hover:not(:disabled):not(.page-active) {
-            background: #eff6ff !important;
-            border-color: #93c5fd !important;
-            color: #1e40af;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+            background: #EDEAE3;
+            border-color: #4A8C6F;
+            color: #2C5E43;
         }
-        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .page-active {
             background: var(--accent-gradient) !important;
             color: #fff !important;
             border-color: transparent !important;
-            box-shadow: var(--shadow-btn-hover);
+            box-shadow: 0 2px 10px rgba(44, 94, 67, 0.3);
         }
 
-        /* ===== 顶部导航按钮 ===== */
-        .nav-btn {
-            background: var(--bg-surface) !important;
-            border: 1.5px solid var(--border-primary) !important;
-            color: var(--text-secondary) !important;
-            transition: all var(--transition-fast) !important;
-            box-shadow: var(--shadow-card);
-        }
-        .nav-btn:hover {
-            background: #eff6ff !important;
-            border-color: #93c5fd !important;
-            color: #1e40af !important;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-        }
+        .sort-btn-inactive { color: #5C5346; font-weight: 600; }
+        .sort-btn-inactive:hover { color: #2C5E43; background: #EDEAE3; }
 
-        /* ===== 模态框（详情弹窗） ===== */
-        #modal {
-            background: rgba(0, 0, 0, 0.4) !important;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+        /* 🌿 搜索框 */
+        #search-input {
+            background: #ffffff !important;
+            border: 1.5px solid #D6CFC2 !important;
+            color: #3D3830 !important;
+            font-weight: 500 !important;
+            box-shadow: 0 2px 6px rgba(120, 113, 100, 0.05) !important;
         }
-        #modal > div {
-            background: var(--bg-surface) !important;
-            border: 1.5px solid var(--border-primary) !important;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12) !important;
+        #search-input:focus {
+            border-color: #4A8C6F !important;
+            box-shadow: 0 0 0 3px rgba(74, 140, 111, 0.15), 0 2px 8px rgba(0,0,0,0.04) !important;
         }
-        #modal > div > div:first-child {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(6, 182, 212, 0.04)) !important;
-            border-bottom: 1.5px solid var(--border-primary) !important;
-        }
-        #modal-title {
-            color: var(--text-bright) !important;
-        }
-        #modal-close {
-            color: var(--text-muted) !important;
-        }
-        #modal-close:hover {
-            color: var(--text-bright) !important;
-        }
-        .modal-meta-tag {
-            background: #dbeafe !important;
-            color: #1e40af !important;
-            border: 1.5px solid #93c5fd !important;
-        }
-
-        /* ===== 链接按钮 ===== */
-        .link-btn {
-            background: var(--bg-surface) !important;
-            border: 1.5px solid var(--border-primary) !important;
-            color: var(--text-primary) !important;
-            transition: all var(--transition-fast) !important;
-            box-shadow: var(--shadow-card);
-        }
-        .link-btn:hover {
-            background: #eff6ff !important;
-            border-color: #93c5fd !important;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.12);
-        }
-
-        /* ===== 访问验证模态框 ===== */
-        #accessModal > div {
-            background: var(--bg-surface) !important;
-            border: 1.5px solid var(--border-primary) !important;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12) !important;
-        }
-        #accessCodeInput {
-            background: var(--bg-surface) !important;
-            border: 1.5px solid var(--border-primary) !important;
-            color: var(--text-primary) !important;
-            box-shadow: var(--shadow-card) !important;
-        }
-        #accessCodeInput:focus {
-            border-color: var(--accent-1) !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
-        }
-        #accessCodeInput::placeholder { color: var(--text-muted) !important; }
-        #verifyBtn {
-            background: var(--accent-gradient) !important;
-            color: #fff !important;
-            border: none !important;
-            box-shadow: var(--shadow-btn) !important;
-        }
-        #verifyBtn:hover {
-            filter: brightness(1.05);
-            box-shadow: var(--shadow-btn-hover) !important;
-        }
-        #accessLink {
-            background: var(--accent-gradient) !important;
-            color: #fff !important;
-            box-shadow: var(--shadow-btn) !important;
-        }
-        #accessLink:hover {
-            filter: brightness(1.05);
-            box-shadow: var(--shadow-btn-hover) !important;
-        }
-        #errorText { color: #e53e3e !important; }
-
-        /* ===== 取码教程按钮 ===== */
-        .tutorial-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem 1.5rem;
-            background: var(--accent-gradient) !important;
-            color: #fff !important;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all var(--transition-fast);
-            box-shadow: var(--shadow-btn);
-        }
-        .tutorial-btn:hover {
-            filter: brightness(1.05);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-btn-hover);
-        }
-
-        /* ===== 空状态 ===== */
-        .empty-state {
-            color: var(--text-muted) !important;
-        }
-
-        /* ===== 统计数字 ===== */
-        #total-count {
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* ===== 站点标题 ===== */
-        #site-title {
-            background: var(--accent-gradient) !important;
-            -webkit-background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-            background-clip: text !important;
-        }
-
-        /* ===== 卡片进入动画 ===== */
-        @keyframes cardIn {
-            from { opacity: 0; transform: translateY(12px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .resource-card {
-            animation: cardIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
-        }
-
-        /* ===== 模态框动画 ===== */
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        #modal > div {
-            animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* ===== 响应式 ===== */
-        @media (max-width: 640px) {
-            .resource-card { padding: 1rem; }
-            .resource-card h3 { font-size: 0.875rem !important; }
-        }
+        #search-input::placeholder { color: #A39E93 !important; }
+       /* 🎌 取码教程按钮 */
+.tutorial-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    background: linear-gradient(135deg, #1E3A5F, #3B6CB5);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 12px rgba(30, 58, 95, 0.25);
+    letter-spacing: 0.02em;
+}
+.tutorial-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(30, 58, 95, 0.35);
+}
     </style>
 </head>
-<body class="text-stone-700 min-h-screen flex flex-col selection:bg-blue-500/20 selection:text-blue-900">
+<body class="text-stone-700 min-h-screen flex flex-col selection:bg-emerald-200 selection:text-emerald-900">
 
-    <!-- 背景光球 -->
-    <div class="bg-orb bg-orb-1"></div>
-    <div class="bg-orb bg-orb-2"></div>
-    <div class="bg-orb bg-orb-3"></div>
-
-    <!-- 访问验证模态框 -->
-    <div id="accessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
-        <div style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:20px; padding:2.5rem; max-width:400px; width:calc(100% - 2rem); box-shadow:0 25px 60px rgba(0,0,0,0.12); animation:modalIn 0.3s ease;">
-            <div style="text-align:center; margin-bottom:1.75rem;">
-                <a id="btn-tutorial" href="#" target="_blank" rel="noopener noreferrer" class="tutorial-btn">
-                    📖 取码教程
-                </a>
-            </div>
-            <a id="accessLink" href="#" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; width:100%; padding:0.85rem; background:linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4); color:#fff; border-radius:12px; font-weight:600; text-decoration:none; margin-bottom:1.5rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(59,130,246,0.3);">
+    <!-- 🛡️ 访问验证模态框 -->
+    <div id="accessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(60,50,40,0.3); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
+        <div style="background:#fff; border:1.5px solid #D6CFC2; border-radius:20px; padding:2.5rem; max-width:400px; width:calc(100% - 2rem); box-shadow:0 25px 60px rgba(60,50,40,0.15), inset 0 1px 0 rgba(255,255,255,0.8); animation:modalIn 0.3s ease;">
+            <!-- ✅ 新增 -->
+<div style="text-align:center; margin-bottom:1.75rem;">
+    <a id="btn-tutorial" href="#" target="_blank" rel="noopener noreferrer" class="tutorial-btn">
+        📖 取码教程
+    </a>
+</div>
+            <a id="accessLink" href="#" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; width:100%; padding:0.85rem; background:var(--accent-gradient); color:#fff; border-radius:12px; font-weight:600; text-decoration:none; margin-bottom:1.5rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(44, 94, 67, 0.3);">
                 <span style="margin-right:0.5rem;">👉</span> 点击获取 <span id="linkDate" style="margin-left:0.25rem;"></span> 访问码
             </a>
-            <input id="accessCodeInput" type="text" placeholder="请输入访问码，不会的看上方教程" maxlength="15" autocomplete="off" style="width:100%; padding:0.85rem 1rem; border:1.5px solid #e2e8f0; border-radius:12px; font-size:1rem; outline:none; background:#fff; color:#1a202c; box-sizing:border-box; transition:all 0.2s;" />
-            <button id="verifyBtn" style="width:100%; padding:0.9rem; background:linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:1rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(59,130,246,0.3);">✅ 验证并进入</button>
-            <div id="errorText" style="color:#e53e3e; font-size:0.85rem; text-align:center; margin-top:1rem; font-weight:600; display:none;"></div>
+               <input id="accessCodeInput" type="text" placeholder="请输入访问码，不会的看上方教程" maxlength="15" autocomplete="off" style="width:100%; padding:0.85rem 1rem; border:1.5px solid #D6CFC2; border-radius:12px; font-size:1rem; outline:none; background:#F7F5F0; color:#3D3830; box-sizing:border-box; transition:all 0.2s;" />
+            <button id="verifyBtn" style="width:100%; padding:0.9rem; background:linear-gradient(135deg, #2C5E43, #4A8C6F); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:1rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(44, 94, 67, 0.3);">✅ 验证并进入</button>
+            <div id="errorText" style="color:#C35B40; font-size:0.85rem; text-align:center; margin-top:1rem; font-weight:600; display:none;"></div>
         </div>
     </div>
 
-    <!-- 顶栏 -->
-    <header class="backdrop-blur-xl bg-white/92 border-b border-stone-200/80 px-4 pt-3 pb-2 md:p-4 sticky top-0 z-50 flex flex-col gap-2.5 shadow-sm">
+    <!-- ✅ 顶栏 -->
+    <header class="backdrop-blur-xl bg-[#F7F5F0]/90 border-b border-stone-200/80 px-4 pt-3 pb-2 md:p-4 sticky top-0 z-50 flex flex-col gap-2.5 shadow-sm">
         <div class="flex items-center justify-between w-full">
             <div class="w-16 md:hidden"></div>
-            <h1 id="site-title" class="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-violet-600 to-cyan-600 text-center flex-1 tracking-tight">MoJo 资源库</h1>
+            <h1 id="site-title" class="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-800 to-teal-600 text-center flex-1 tracking-tight">资源库</h1>
             <div class="flex gap-2 shrink-0">
                 <a id="btn-announcement" href="#" target="_blank"
-                   class="nav-btn px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">
+                   class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 hover:text-emerald-900 hover:bg-emerald-100 hover:border-emerald-300 transition-all whitespace-nowrap">
                     📢 新人必看
                 </a>
                 <a id="btn-message-board" href="#" target="_blank"
-                   class="nav-btn px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">
+                   class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-800 hover:text-amber-900 hover:bg-amber-100 hover:border-amber-300 transition-all whitespace-nowrap">
+                  <!-- 🌿 新增：泰剧小说按钮 -->
+            <a id="btn-novel" href="#" target="_blank"
+               class="px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-xs font-semibold text-orange-800 hover:text-orange-900 hover:bg-orange-100 hover:border-orange-300 transition-all whitespace-nowrap">
+                📖 泰剧小说
+            </a>
                     💬 留言
-                </a>
-                <a id="btn-novel" href="#" target="_blank"
-                   class="nav-btn px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">
-                    📖 泰剧小说
                 </a>
             </div>
         </div>
 
         <div class="w-full">
             <input type="text" id="search-input" placeholder="🔍 搜索资源名称..."
-                   class="w-full bg-white border border-stone-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm text-stone-800 placeholder-stone-400 transition-all shadow-sm">
+                   class="w-full bg-white border border-stone-300 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-400/40 focus:border-emerald-500 text-sm text-stone-800 placeholder-stone-400 transition-all shadow-sm">
         </div>
 
         <div class="w-full">
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="parent-category-bar">
-                <button id="btn-reset-category" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-600 border border-stone-200 hover:bg-blue-50 hover:text-blue-700 transition category-active whitespace-nowrap">全部</button>
+                <button id="btn-reset-category" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 hover:bg-stone-100 transition category-active whitespace-nowrap">全部</button>
             </div>
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 hidden" id="child-category-bar"></div>
         </div>
 
         <div class="flex items-center justify-between w-full pt-0.5">
             <div class="flex bg-stone-100 rounded-lg p-0.5 border border-stone-200">
-                <button id="sort-date" class="sort-btn sort-btn-active px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap transition">按时间</button>
+                <button id="sort-date" class="sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-sm whitespace-nowrap transition">按时间</button>
                 <button id="sort-pinyin" class="sort-btn sort-btn-inactive px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition">按名称</button>
             </div>
-            <span class="text-xs text-stone-500 font-semibold">共 <span id="total-count" class="text-blue-600 font-bold">0</span> 条</span>
+            <span class="text-xs text-stone-500 font-semibold">共 <span id="total-count" class="text-emerald-800 font-bold">0</span> 条</span>
         </div>
     </header>
 
@@ -499,14 +244,14 @@
     </div>
 
     <!-- 详情弹窗 -->
-    <div id="modal" class="fixed inset-0 bg-stone-900/40 backdrop-blur-md hidden z-[100] flex items-center justify-center p-4">
+    <div id="modal" class="fixed inset-0 bg-stone-900/30 backdrop-blur-md hidden z-[100] flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-stone-200 overflow-hidden transform transition-all">
-            <div class="p-6 border-b border-stone-200 flex justify-between items-start bg-gradient-to-r from-blue-50 to-cyan-50">
-                <h2 id="modal-title" class="text-xl font-bold text-stone-900 pr-4 tracking-tight"></h2>
+            <div class="p-6 border-b border-stone-200 flex justify-between items-start bg-gradient-to-r from-emerald-50 to-teal-50">
+                <h2 id="modal-title" class="text-xl font-bold text-stone-800 pr-4 tracking-tight"></h2>
                 <button id="modal-close" class="text-stone-400 hover:text-stone-600 text-2xl leading-none transition">&times;</button>
             </div>
             <div class="p-6">
-                <div id="modal-meta" class="flex flex-wrap gap-2 mb-5 text-xs"></div>
+                <div id="modal-meta" class="flex flex-wrap gap-2 mb-4 text-xs"></div>
                 <div id="modal-links" class="space-y-3"></div>
             </div>
         </div>
