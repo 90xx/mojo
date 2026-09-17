@@ -3,236 +3,495 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YaLi 资源库</title>
+    <title>MoJo 资源库</title>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
     <link rel="stylesheet" href="dist/style.css">
     <style>
+        /* ===== 现代深色玻璃拟态主题 ===== */
         :root {
-            /* 🌿 现代泰式：温暖米白底色 */
-            --bg-base: #F7F5F0;
-            --border-subtle: rgba(120, 113, 100, 0.15);
-            /* 热带植物绿 → 柚木色渐变 */
-            --accent-gradient: linear-gradient(135deg, #2C5E43 0%, #4A8C6F 50%, #D4A373 100%);
-            --card-shadow: 0 2px 10px rgba(120, 113, 100, 0.08), 0 1px 3px rgba(0,0,0,0.04);
-            --card-shadow-hover: 0 12px 32px rgba(120, 113, 100, 0.15), 0 4px 12px rgba(0,0,0,0.04);
-            --breath-duration: 4s;
-        }
-        body { background-color: var(--bg-base); }
+            /* 主色调 - 深空蓝背景 */
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.07);
+            --bg-glass: rgba(17, 24, 39, 0.7);
 
-        @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes breathe {
-            0%, 100% { box-shadow: var(--card-shadow); }
-            50% { box-shadow: var(--card-shadow-hover); }
+            /* 边框 */
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-card: rgba(255, 255, 255, 0.08);
+            --border-card-hover: rgba(99, 102, 241, 0.5);
+
+            /* 文字 */
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            /* 强调色 - 渐变 */
+            --accent-1: #6366f1;
+            --accent-2: #8b5cf6;
+            --accent-3: #06b6d4;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+            --accent-gradient-hover: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #22d3ee 100%);
+
+            /* 阴影 */
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2);
+            --shadow-card-hover: 0 8px 40px rgba(99, 102, 241, 0.15), 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.15);
+
+            /* 动画 */
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        #accessModal input:focus { border-color: #2C5E43 !important; box-shadow: 0 0 0 3px rgba(44, 94, 67, 0.2) !important; }
-        #accessLink:hover { filter: brightness(1.05); }
-        #verifyBtn:hover { filter: brightness(1.05); }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* ===== 动态背景粒子效果 ===== */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: -1;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+        .bg-orb-1 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);
+            top: -100px; left: -100px;
+            animation-delay: 0s;
+        }
+        .bg-orb-2 {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.12), transparent 70%);
+            bottom: -80px; right: -80px;
+            animation-delay: -7s;
+        }
+        .bg-orb-3 {
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* ===== 滚动条美化 ===== */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* 🌿 日期分组标题 - 泰式自然风 */
-        .group-label {
-            grid-column: 1 / -1;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #2C5E43;
-            background: linear-gradient(90deg, #E8F0E4 0%, #F7F5F0 100%);
-            border-left: 4px solid #4A8C6F;
-            padding: 0.5rem 1rem;
-            border-radius: 0 8px 8px 0;
-            margin: 0.75rem 0 0.25rem;
-            letter-spacing: 0.02em;
+        /* ===== 顶栏 ===== */
+        header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        /* 🌿 分类激活态 - 热带绿渐变 */
+        /* ===== 搜索框 ===== */
+        #search-input {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid var(--border-subtle) !important;
+            color: var(--text-primary) !important;
+            font-weight: 500 !important;
+            transition: all var(--transition-fast) !important;
+        }
+        #search-input:focus {
+            border-color: var(--accent-1) !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), 0 0 20px rgba(99, 102, 241, 0.1) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+        }
+        #search-input::placeholder { color: var(--text-muted) !important; }
+
+        /* ===== 分类按钮 ===== */
+        .parent-cat-btn, .child-cat-btn {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid var(--border-subtle) !important;
+            color: var(--text-secondary) !important;
+            transition: all var(--transition-fast) !important;
+        }
+        .parent-cat-btn:hover, .child-cat-btn:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(99, 102, 241, 0.3) !important;
+            color: var(--text-primary) !important;
+        }
         .category-active {
             background: var(--accent-gradient) !important;
             color: #fff !important;
             border-color: transparent !important;
-            box-shadow: 0 2px 10px rgba(44, 94, 67, 0.3) !important;
+            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.3) !important;
         }
 
-        /* 🌿 资源卡片 - 藤编/原木质感 */
+        /* ===== 排序按钮 ===== */
+        .sort-btn {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: none !important;
+            color: var(--text-secondary) !important;
+        }
+        .sort-btn-active {
+            background: var(--accent-gradient) !important;
+            color: #fff !important;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25) !important;
+        }
+        .sort-btn-inactive:hover {
+            color: var(--text-primary) !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        /* ===== 资源卡片 - 玻璃拟态 ===== */
         .resource-card {
-            background: #ffffff;
-            border: 1.5px solid #E5E0D5;
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-card);
             border-radius: 16px;
-            padding: 1.1rem;
+            padding: 1.2rem;
             cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--card-shadow);
+            transition: all var(--transition-smooth);
             position: relative;
             overflow: hidden;
-            animation: breathe var(--breath-duration) ease-in-out infinite;
-            animation-delay: calc(var(--i, 0) * 0.15s);
         }
         .resource-card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 3px;
+            height: 2px;
             background: var(--accent-gradient);
             opacity: 0;
-            transition: opacity 0.35s ease;
-            border-radius: 16px 16px 0 0;
+            transition: opacity var(--transition-smooth);
+        }
+        .resource-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.03), transparent);
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+            pointer-events: none;
+        }
+        .resource-card:hover {
+            border-color: var(--border-card-hover);
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-card-hover);
         }
         .resource-card:hover::before { opacity: 1; }
-        .resource-card:hover {
-            border-color: #4A8C6F;
-            box-shadow: var(--card-shadow-hover);
-            transform: translateY(-3px);
-            animation: none;
-        }
+        .resource-card:hover::after { opacity: 1; }
+
         .resource-card h3 {
-            color: #3D3830;
-            font-weight: 600;
-            font-size: 0.9rem;
-            line-height: 1.45;
+            color: var(--text-primary) !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+            line-height: 1.5 !important;
+            letter-spacing: -0.01em;
         }
 
-        /* 🌿 高饱和度标签 - 热带自然色系 */
+        /* ===== 标签 ===== */
         .card-tag {
-            display: inline-block;
-            font-size: 0.68rem;
-            font-weight: 600;
-            padding: 3px 10px;
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 10px;
             border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
             letter-spacing: 0.02em;
-            transition: all 0.2s ease;
+            transition: all var(--transition-fast);
         }
-        .tag-terracotta { background: #E27D60; color: #fff; border: 1px solid #C35B40; }
-        .tag-mango      { background: #E9C46A; color: #5C4B1F; border: 1px solid #D4A33A; }
-        .tag-sky        { background: #8ECAE6; color: #1A4F66; border: 1px solid #5BA4C9; }
-        .tag-orchid     { background: #B5838D; color: #fff; border: 1px solid #9A6B75; }
-        .tag-mint       { background: #95D5B2; color: #1B4332; border: 1px solid #6BC492; }
-        .tag-teak       { background: #D4A373; color: #fff; border: 1px solid #B8864E; }
+        .card-tag:hover {
+            transform: scale(1.05);
+        }
+        .tag-indigo    { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.25); }
+        .tag-violet    { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.25); }
+        .tag-cyan      { background: rgba(6, 182, 212, 0.15); color: #67e8f9; border: 1px solid rgba(6, 182, 212, 0.25); }
+        .tag-rose      { background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.25); }
+        .tag-amber     { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.25); }
+        .tag-emerald   { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.25); }
 
-        /* 🌿 分页按钮 */
+        /* ===== 分组标签 ===== */
+        .group-label {
+            grid-column: 1 / -1;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-1);
+            background: rgba(99, 102, 241, 0.08);
+            border-left: 3px solid var(--accent-1);
+            padding: 0.5rem 1rem;
+            border-radius: 0 10px 10px 0;
+            margin: 0.75rem 0 0.25rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* ===== 分页按钮 ===== */
         .page-btn {
             padding: 0.4rem 0.85rem;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 0.8rem;
             font-weight: 600;
-            border: 1.5px solid #D6CFC2;
-            color: #5C5346;
-            background: #fff;
-            transition: all 0.25s ease;
+            border: 1px solid var(--border-subtle) !important;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.03) !important;
+            transition: all var(--transition-fast);
             cursor: pointer;
         }
         .page-btn:hover:not(:disabled):not(.page-active) {
-            background: #EDEAE3;
-            border-color: #4A8C6F;
-            color: #2C5E43;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(99, 102, 241, 0.4) !important;
+            color: var(--text-primary);
         }
-        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .page-active {
             background: var(--accent-gradient) !important;
             color: #fff !important;
             border-color: transparent !important;
-            box-shadow: 0 2px 10px rgba(44, 94, 67, 0.3);
+            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
         }
 
-        .sort-btn-inactive { color: #5C5346; font-weight: 600; }
-        .sort-btn-inactive:hover { color: #2C5E43; background: #EDEAE3; }
+        /* ===== 顶部导航按钮 ===== */
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid var(--border-subtle) !important;
+            color: var(--text-secondary) !important;
+            transition: all var(--transition-fast) !important;
+        }
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(99, 102, 241, 0.3) !important;
+            color: var(--text-primary) !important;
+        }
 
-        /* 🌿 搜索框 */
-        #search-input {
-            background: #ffffff !important;
-            border: 1.5px solid #D6CFC2 !important;
-            color: #3D3830 !important;
-            font-weight: 500 !important;
-            box-shadow: 0 2px 6px rgba(120, 113, 100, 0.05) !important;
+        /* ===== 模态框（详情弹窗） ===== */
+        #modal {
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
-        #search-input:focus {
-            border-color: #4A8C6F !important;
-            box-shadow: 0 0 0 3px rgba(74, 140, 111, 0.15), 0 2px 8px rgba(0,0,0,0.04) !important;
+        #modal > div {
+            background: var(--bg-secondary) !important;
+            border: 1px solid var(--border-subtle) !important;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5) !important;
         }
-        #search-input::placeholder { color: #A39E93 !important; }
-       /* 🎌 取码教程按钮 */
-.tutorial-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 1.5rem;
-    background: linear-gradient(135deg, #1E3A5F, #3B6CB5);
-    color: #fff;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.25s ease;
-    box-shadow: 0 3px 12px rgba(30, 58, 95, 0.25);
-    letter-spacing: 0.02em;
-}
-.tutorial-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-    box-shadow: 0 5px 18px rgba(30, 58, 95, 0.35);
-}
+        #modal > div > div:first-child {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(6, 182, 212, 0.05)) !important;
+            border-bottom: 1px solid var(--border-subtle) !important;
+        }
+        #modal-title {
+            color: var(--text-primary) !important;
+        }
+        #modal-close {
+            color: var(--text-muted) !important;
+        }
+        #modal-close:hover {
+            color: var(--text-primary) !important;
+        }
+        .modal-meta-tag {
+            background: rgba(99, 102, 241, 0.1) !important;
+            color: #a5b4fc !important;
+            border: 1px solid rgba(99, 102, 241, 0.2) !important;
+        }
+
+        /* ===== 链接按钮 ===== */
+        .link-btn {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid var(--border-subtle) !important;
+            color: var(--text-primary) !important;
+            transition: all var(--transition-fast) !important;
+        }
+        .link-btn:hover {
+            background: rgba(99, 102, 241, 0.1) !important;
+            border-color: rgba(99, 102, 241, 0.4) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+
+        /* ===== 访问验证模态框 ===== */
+        #accessModal > div {
+            background: var(--bg-secondary) !important;
+            border: 1px solid var(--border-subtle) !important;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5) !important;
+        }
+        #accessCodeInput {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid var(--border-subtle) !important;
+            color: var(--text-primary) !important;
+        }
+        #accessCodeInput:focus {
+            border-color: var(--accent-1) !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+        }
+        #accessCodeInput::placeholder { color: var(--text-muted) !important; }
+        #verifyBtn {
+            background: var(--accent-gradient) !important;
+            color: #fff !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+        }
+        #verifyBtn:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+        }
+        #accessLink {
+            background: var(--accent-gradient) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+        }
+        #accessLink:hover {
+            filter: brightness(1.05);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+        }
+        #errorText { color: #f87171 !important; }
+
+        /* ===== 取码教程按钮 ===== */
+        .tutorial-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1.5rem;
+            background: var(--accent-gradient) !important;
+            color: #fff !important;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            box-shadow: 0 3px 12px rgba(99, 102, 241, 0.25);
+        }
+        .tutorial-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 18px rgba(99, 102, 241, 0.35);
+        }
+
+        /* ===== 空状态 ===== */
+        .empty-state {
+            color: var(--text-muted) !important;
+        }
+
+        /* ===== 统计数字 ===== */
+        #total-count {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== 站点标题 ===== */
+        #site-title {
+            background: var(--accent-gradient) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+
+        /* ===== 卡片进入动画 ===== */
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .resource-card {
+            animation: cardIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+
+        /* ===== 模态框动画 ===== */
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        #modal > div {
+            animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== 响应式优化 ===== */
+        @media (max-width: 640px) {
+            .resource-card { padding: 1rem; }
+            .resource-card h3 { font-size: 0.875rem !important; }
+        }
     </style>
 </head>
-<body class="text-stone-700 min-h-screen flex flex-col selection:bg-emerald-200 selection:text-emerald-900">
+<body class="text-stone-700 min-h-screen flex flex-col selection:bg-indigo-500/30 selection:text-indigo-100">
 
-    <!-- 🛡️ 访问验证模态框 -->
-    <div id="accessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(60,50,40,0.3); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
-        <div style="background:#fff; border:1.5px solid #D6CFC2; border-radius:20px; padding:2.5rem; max-width:400px; width:calc(100% - 2rem); box-shadow:0 25px 60px rgba(60,50,40,0.15), inset 0 1px 0 rgba(255,255,255,0.8); animation:modalIn 0.3s ease;">
-            <!-- ✅ 新增 -->
-<div style="text-align:center; margin-bottom:1.75rem;">
-    <a id="btn-tutorial" href="#" target="_blank" rel="noopener noreferrer" class="tutorial-btn">
-        📖 取码教程
-    </a>
-</div>
-            <a id="accessLink" href="#" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; width:100%; padding:0.85rem; background:var(--accent-gradient); color:#fff; border-radius:12px; font-weight:600; text-decoration:none; margin-bottom:1.5rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(44, 94, 67, 0.3);">
+    <!-- 动态背景光球 -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <!-- 访问验证模态框 -->
+    <div id="accessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
+        <div style="background:#111827; border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:2.5rem; max-width:400px; width:calc(100% - 2rem); box-shadow:0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); animation:modalIn 0.3s ease;">
+            <!-- 取码教程按钮 -->
+            <div style="text-align:center; margin-bottom:1.75rem;">
+                <a id="btn-tutorial" href="#" target="_blank" rel="noopener noreferrer" class="tutorial-btn">
+                    📖 取码教程
+                </a>
+            </div>
+            <a id="accessLink" href="#" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; width:100%; padding:0.85rem; background:linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4); color:#fff; border-radius:12px; font-weight:600; text-decoration:none; margin-bottom:1.5rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(99,102,241,0.3);">
                 <span style="margin-right:0.5rem;">👉</span> 点击获取 <span id="linkDate" style="margin-left:0.25rem;"></span> 访问码
             </a>
-               <input id="accessCodeInput" type="text" placeholder="请输入访问码，不会的看上方教程" maxlength="15" autocomplete="off" style="width:100%; padding:0.85rem 1rem; border:1.5px solid #D6CFC2; border-radius:12px; font-size:1rem; outline:none; background:#F7F5F0; color:#3D3830; box-sizing:border-box; transition:all 0.2s;" />
-            <button id="verifyBtn" style="width:100%; padding:0.9rem; background:linear-gradient(135deg, #2C5E43, #4A8C6F); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:1rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(44, 94, 67, 0.3);">✅ 验证并进入</button>
-            <div id="errorText" style="color:#C35B40; font-size:0.85rem; text-align:center; margin-top:1rem; font-weight:600; display:none;"></div>
+            <input id="accessCodeInput" type="text" placeholder="请输入访问码，不会的看上方教程" maxlength="15" autocomplete="off" style="width:100%; padding:0.85rem 1rem; border:1px solid rgba(255,255,255,0.08); border-radius:12px; font-size:1rem; outline:none; background:rgba(255,255,255,0.05); color:#f1f5f9; box-sizing:border-box; transition:all 0.2s;" />
+            <button id="verifyBtn" style="width:100%; padding:0.9rem; background:linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:1rem; transition:all 0.2s; box-shadow:0 4px 15px rgba(99,102,241,0.3);">✅ 验证并进入</button>
+            <div id="errorText" style="color:#f87171; font-size:0.85rem; text-align:center; margin-top:1rem; font-weight:600; display:none;"></div>
         </div>
     </div>
 
-    <!-- ✅ 顶栏 -->
-    <header class="backdrop-blur-xl bg-[#F7F5F0]/90 border-b border-stone-200/80 px-4 pt-3 pb-2 md:p-4 sticky top-0 z-50 flex flex-col gap-2.5 shadow-sm">
+    <!-- 顶栏 -->
+    <header class="backdrop-blur-xl bg-[#111827]/80 border-b border-stone-800/50 px-4 pt-3 pb-2 md:p-4 sticky top-0 z-50 flex flex-col gap-2.5 shadow-sm">
         <div class="flex items-center justify-between w-full">
             <div class="w-16 md:hidden"></div>
-            <h1 id="site-title" class="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-800 to-teal-600 text-center flex-1 tracking-tight">资源库</h1>
+            <h1 id="site-title" class="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-400 text-center flex-1 tracking-tight">MoJo 资源库</h1>
             <div class="flex gap-2 shrink-0">
                 <a id="btn-announcement" href="#" target="_blank"
-                   class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 hover:text-emerald-900 hover:bg-emerald-100 hover:border-emerald-300 transition-all whitespace-nowrap">
+                   class="nav-btn px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
                     📢 新人必看
                 </a>
                 <a id="btn-message-board" href="#" target="_blank"
-                   class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-800 hover:text-amber-900 hover:bg-amber-100 hover:border-amber-300 transition-all whitespace-nowrap">
-                  <!-- 🌿 新增：泰剧小说按钮 -->
-            <a id="btn-novel" href="#" target="_blank"
-               class="px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-xs font-semibold text-orange-800 hover:text-orange-900 hover:bg-orange-100 hover:border-orange-300 transition-all whitespace-nowrap">
-                📖 泰剧小说
-            </a>
+                   class="nav-btn px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
                     💬 留言
+                </a>
+                <a id="btn-novel" href="#" target="_blank"
+                   class="nav-btn px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
+                    📖 泰剧小说
                 </a>
             </div>
         </div>
 
         <div class="w-full">
             <input type="text" id="search-input" placeholder="🔍 搜索资源名称..."
-                   class="w-full bg-white border border-stone-300 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-400/40 focus:border-emerald-500 text-sm text-stone-800 placeholder-stone-400 transition-all shadow-sm">
+                   class="w-full bg-white/5 border border-stone-700/50 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 text-sm text-stone-200 placeholder-stone-500 transition-all shadow-sm">
         </div>
 
         <div class="w-full">
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="parent-category-bar">
-                <button id="btn-reset-category" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 hover:bg-stone-100 transition category-active whitespace-nowrap">全部</button>
+                <button id="btn-reset-category" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-stone-400 border border-stone-700/50 hover:bg-white/10 transition category-active whitespace-nowrap">全部</button>
             </div>
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 hidden" id="child-category-bar"></div>
         </div>
 
         <div class="flex items-center justify-between w-full pt-0.5">
-            <div class="flex bg-stone-100 rounded-lg p-0.5 border border-stone-200">
-                <button id="sort-date" class="sort-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-sm whitespace-nowrap transition">按时间</button>
+            <div class="flex bg-stone-800/50 rounded-lg p-0.5 border border-stone-700/50">
+                <button id="sort-date" class="sort-btn sort-btn-active px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap transition">按时间</button>
                 <button id="sort-pinyin" class="sort-btn sort-btn-inactive px-3 py-1.5 rounded-md text-xs whitespace-nowrap transition">按名称</button>
             </div>
-            <span class="text-xs text-stone-500 font-semibold">共 <span id="total-count" class="text-emerald-800 font-bold">0</span> 条</span>
+            <span class="text-xs text-stone-500 font-semibold">共 <span id="total-count" class="text-indigo-400 font-bold">0</span> 条</span>
         </div>
     </header>
 
@@ -244,14 +503,14 @@
     </div>
 
     <!-- 详情弹窗 -->
-    <div id="modal" class="fixed inset-0 bg-stone-900/30 backdrop-blur-md hidden z-[100] flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-stone-200 overflow-hidden transform transition-all">
-            <div class="p-6 border-b border-stone-200 flex justify-between items-start bg-gradient-to-r from-emerald-50 to-teal-50">
-                <h2 id="modal-title" class="text-xl font-bold text-stone-800 pr-4 tracking-tight"></h2>
-                <button id="modal-close" class="text-stone-400 hover:text-stone-600 text-2xl leading-none transition">&times;</button>
+    <div id="modal" class="fixed inset-0 bg-stone-900/50 backdrop-blur-md hidden z-[100] flex items-center justify-center p-4">
+        <div class="bg-[#111827] w-full max-w-lg rounded-2xl shadow-2xl border border-stone-800/50 overflow-hidden transform transition-all">
+            <div class="p-6 border-b border-stone-800/50 flex justify-between items-start bg-gradient-to-r from-indigo-500/10 to-cyan-500/5">
+                <h2 id="modal-title" class="text-xl font-bold text-stone-100 pr-4 tracking-tight"></h2>
+                <button id="modal-close" class="text-stone-500 hover:text-stone-300 text-2xl leading-none transition">&times;</button>
             </div>
             <div class="p-6">
-                <div id="modal-meta" class="flex flex-wrap gap-2 mb-4 text-xs"></div>
+                <div id="modal-meta" class="flex flex-wrap gap-2 mb-5 text-xs"></div>
                 <div id="modal-links" class="space-y-3"></div>
             </div>
         </div>
