@@ -288,36 +288,52 @@ const StatsManager = {
 
     async fetchStats() {
         try {
-            // ✅ FIX 6: 改用 statsFetch，自动带 X-Site-Host
             const res = await statsFetch('/api/stats');
             const data = await res.json();
             
+            // 今日访问
             const todayEl = document.getElementById('stat-today-views');
             if (todayEl) todayEl.textContent = data.todayViews.toLocaleString();
+
+            // ✅ 累计总访问
+            const totalEl = document.getElementById('stat-total-views');
+            if (totalEl) totalEl.textContent = data.totalViews.toLocaleString();
             
-            const topList = document.getElementById('stat-top-resources');
-            if (topList) {
-                topList.innerHTML = '';
-                if (data.topResources && data.topResources.length > 0) {
-                    data.topResources.forEach((item, index) => {
-                        topList.insertAdjacentHTML('beforeend', `
-                            <li class="flex justify-between items-center">
-                                <span class="truncate mr-2 text-pink-700 font-medium" title="${item.title}">${index + 1}. ${item.title}</span>
-                                <span class="text-pink-600 font-mono text-xs font-bold bg-pink-100 px-2 py-0.5 rounded">${item.count}</span>
-                            </li>
-                        `);
-                    });
-                } else {
-                    topList.innerHTML = '<li class="text-pink-400 font-medium">暂无数据</li>';
-                }
-            }
+            // ✅ 今日热度 Top5
+            this.renderTopList('stat-top-resources', data.topResourcesToday, '暂无今日数据');
+
+            // ✅ 累计热度 Top5
+            this.renderTopList('stat-top-all-resources', data.topResourcesAll, '暂无累计数据');
+
         } catch (err) {
             console.error("获取统计数据失败:", err);
-            const todayEl = document.getElementById('stat-today-views');
-            if (todayEl) todayEl.textContent = '--';
+            ['stat-today-views', 'stat-total-views'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = '--';
+            });
         }
     },
 
+    // ✅ 抽取通用渲染方法
+    renderTopList(containerId, list, emptyText) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        if (!list || list.length === 0) {
+            container.innerHTML = `<li class="text-pink-400 font-medium">${emptyText}</li>`;
+            return;
+        }
+        list.forEach((item, index) => {
+            container.insertAdjacentHTML('beforeend', `
+                <li class="flex justify-between items-center">
+                    <span class="truncate mr-2 text-pink-700 font-medium" title="${item.title}">${index + 1}. ${item.title}</span>
+                    <span class="text-pink-600 font-mono text-xs font-bold bg-pink-100 px-2 py-0.5 rounded">${item.count}</span>
+                </li>
+            `);
+        });
+    },
+
+    // ... recordView 和 recordClick 保持不变 ...
     recordView() {
         const today = getBeijingDate();
         const lastViewDate = localStorage.getItem('last_stats_view_date');
