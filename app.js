@@ -290,7 +290,7 @@ const StatsManager = {
         try {
             const res = await statsFetch('/api/stats');
             const data = await res.json();
-            
+
             // 今日访问
             const todayEl = document.getElementById('stat-today-views');
             if (todayEl) todayEl.textContent = data.todayViews.toLocaleString();
@@ -298,12 +298,12 @@ const StatsManager = {
             // ✅ 累计总访问
             const totalEl = document.getElementById('stat-total-views');
             if (totalEl) totalEl.textContent = data.totalViews.toLocaleString();
-            
-            // ✅ 今日热度 Top5
-            this.renderTopList('stat-top-resources', data.topResourcesToday, '暂无今日数据');
 
-            // ✅ 累计热度 Top5
-            this.renderTopList('stat-top-all-resources', data.topResourcesAll, '暂无累计数据');
+            // ✅ 今日热度 Top5：使用原始简洁样式
+            this.renderSimpleTopList('stat-top-resources', data.topResourcesToday, '暂无今日数据');
+
+            // ✅ 累计热度 Top20：使用新样式（圆形徽章+双列）
+            this.renderRankedTopList('stat-top-all-resources', data.topResourcesAll, '暂无累计数据');
 
         } catch (err) {
             console.error("获取统计数据失败:", err);
@@ -314,35 +314,46 @@ const StatsManager = {
         }
     },
 
-    // ✅ 抽取通用渲染方法
-    // ✅ 更新：支持 Top20 双列布局 + 前三名高亮
-    renderTopList(containerId, list, emptyText) {
+    // ✅ 今日热度专用：恢复原始简洁样式
+    renderSimpleTopList(containerId, list, emptyText) {
         const container = document.getElementById(containerId);
         if (!container) return;
         container.innerHTML = '';
-        
+        if (!list || list.length === 0) {
+            container.innerHTML = `<li class="text-pink-400 font-medium">${emptyText}</li>`;
+            return;
+        }
+        list.forEach((item, index) => {
+            container.insertAdjacentHTML('beforeend', `
+                <li class="flex justify-between items-center">
+                    <span class="truncate mr-2 text-pink-700 font-medium" title="${item.title}">${index + 1}. ${item.title}</span>
+                    <span class="text-pink-600 font-mono text-xs font-bold bg-pink-100 px-2 py-0.5 rounded">${item.count}</span>
+                </li>
+            `);
+        });
+    },
+
+    // ✅ 累计热度专用：Top20 圆形徽章 + 前三名高亮
+    renderRankedTopList(containerId, list, emptyText) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
         if (!list || list.length === 0) {
             container.innerHTML = `<li class="text-pink-400 font-medium col-span-full">${emptyText}</li>`;
             return;
         }
-
         container.innerHTML = list.map((item, index) => {
             const rank = index + 1;
             const isTop3 = rank <= 3;
-            
-            // 前三名：粉色圆底白字序号 + 加粗标题
-            // 其余：浅粉底序号 + 常规标题 + 底部分隔线
             const rankBadge = isTop3
                 ? `<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-pink-500 text-white text-xs font-bold mr-2 shrink-0">${rank}</span>`
                 : `<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-pink-100 text-pink-400 text-xs font-medium mr-2 shrink-0">${rank}</span>`;
-            
             const titleClass = isTop3 ? 'font-bold text-pink-800' : 'text-pink-700';
             const borderClass = isTop3 ? '' : 'border-b border-pink-100/50';
-
-            return `<li class="flex items-center justify-between py-1 ${borderClass}">
-                <span class="flex items-center truncate mr-2" title="${item.title}">
+            return `<li class="flex items-center justify-between py-1 ${borderClass} min-w-0">
+                <span class="flex items-center min-w-0 mr-2" title="${item.title}">
                     ${rankBadge}
-                    <span class="${titleClass} truncate">${item.title}</span>
+                    <span class="${titleClass} truncate block">${item.title}</span>
                 </span>
                 <span class="text-xs text-pink-400 whitespace-nowrap font-mono shrink-0">${item.count.toLocaleString()}</span>
             </li>`;
