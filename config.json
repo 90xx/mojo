@@ -7,7 +7,8 @@
   "statsApiUrl": "https://stats.261512.xyz",
   "dataFiles": [
     "/data/duanjubl.json",
-    "/data/oumeiduanju.json"
+    "/data/oumeiduanju.json",
+    "/data/fuju.json"
   ],
   "categoryTree": {
     "国产AI漫剧": {
