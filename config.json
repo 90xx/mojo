@@ -1,17 +1,16 @@
 {
-  "siteName": "YaLi",
-  "announcementUrl": "https://www.kdocs.cn/l/crOyXHBVm96c",
-  "messageBoardUrl": "https://tally.so/r/EkoZvB",
-  "tutorialUrl": "https://www.kdocs.cn/l/ceTKATH0kdeM",
+  "siteName": "MoJo",
+  "announcementUrl": "https://www.kdocs.cn/l/crOyXHBVm96c1",
+  "messageBoardUrl": "https://tally.so/r/EkoZvB1",
+  "tutorialUrl": "https://www.kdocs.cn/l/ceTKATH0kdeM1",
   "pageSize": 40,
   "statsApiUrl": "https://stats.261512.xyz",
   "dataFiles": [
-    "/data/resources.json",
-    "/data/shuku10825.json"
+    "/data/resources.json"
   ],
   "categoryTree": {
-    "日更单话": {
-      "children": ["日更单话"]
+    "国产AI漫剧": {
+      "children": ["国产AI漫剧（完结）", "国产AI漫剧（未完结）"]
     },
     "完结漫": {
       "children": ["完结漫", "完结漫（台版）", "完结漫（台有）", "完结漫（台无）", "完结漫（汉化）"]
