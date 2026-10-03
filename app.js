@@ -315,24 +315,39 @@ const StatsManager = {
     },
 
     // ✅ 抽取通用渲染方法
+    // ✅ 更新：支持 Top20 双列布局 + 前三名高亮
     renderTopList(containerId, list, emptyText) {
         const container = document.getElementById(containerId);
         if (!container) return;
         container.innerHTML = '';
+        
         if (!list || list.length === 0) {
-            container.innerHTML = `<li class="text-pink-400 font-medium">${emptyText}</li>`;
+            container.innerHTML = `<li class="text-pink-400 font-medium col-span-full">${emptyText}</li>`;
             return;
         }
-        list.forEach((item, index) => {
-            container.insertAdjacentHTML('beforeend', `
-                <li class="flex justify-between items-center">
-                    <span class="truncate mr-2 text-pink-700 font-medium" title="${item.title}">${index + 1}. ${item.title}</span>
-                    <span class="text-pink-600 font-mono text-xs font-bold bg-pink-100 px-2 py-0.5 rounded">${item.count}</span>
-                </li>
-            `);
-        });
-    },
 
+        container.innerHTML = list.map((item, index) => {
+            const rank = index + 1;
+            const isTop3 = rank <= 3;
+            
+            // 前三名：粉色圆底白字序号 + 加粗标题
+            // 其余：浅粉底序号 + 常规标题 + 底部分隔线
+            const rankBadge = isTop3
+                ? `<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-pink-500 text-white text-xs font-bold mr-2 shrink-0">${rank}</span>`
+                : `<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-pink-100 text-pink-400 text-xs font-medium mr-2 shrink-0">${rank}</span>`;
+            
+            const titleClass = isTop3 ? 'font-bold text-pink-800' : 'text-pink-700';
+            const borderClass = isTop3 ? '' : 'border-b border-pink-100/50';
+
+            return `<li class="flex items-center justify-between py-1 ${borderClass}">
+                <span class="flex items-center truncate mr-2" title="${item.title}">
+                    ${rankBadge}
+                    <span class="${titleClass} truncate">${item.title}</span>
+                </span>
+                <span class="text-xs text-pink-400 whitespace-nowrap font-mono shrink-0">${item.count.toLocaleString()}</span>
+            </li>`;
+        }).join('');
+    },
     // ... recordView 和 recordClick 保持不变 ...
     recordView() {
         const today = getBeijingDate();
