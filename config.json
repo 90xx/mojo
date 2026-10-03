@@ -6,11 +6,12 @@
   "pageSize": 40,
   "statsApiUrl": "https://stats.261512.xyz",
   "dataFiles": [
-    "/data/resources.json"
+    "/data/duanjubl.json",
+    "/data/oumeiduanju.json"
   ],
   "categoryTree": {
-    "国产AI漫剧": {
-      "children": ["国产AI漫剧（完结）", "国产AI漫剧（未完结）"]
+    "短剧": {
+      "children": ["国产AI漫剧（完结）", "国产AI漫剧（未完结）", "欧美AI短剧"]
     },
     "完结漫": {
       "children": ["完结漫", "完结漫（台版）", "完结漫（台有）", "完结漫（台无）", "完结漫（汉化）"]
