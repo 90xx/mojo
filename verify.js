@@ -6,8 +6,40 @@
   // 1. 访问码配置 (请粘贴完整的 ACCESS_MAP)
   // ═══════════════════════════════════════════
   const ACCESS_MAP = {
-    '2026-08-31': { link: 'https://pan.quark.cn/s/2fb6198a1d1d', code: '9wjd' },
-    '2026-11-15': { link: 'https://drive.uc.cn/s/7ae13c77de8a4', code: '3ibq' },
+   '2026-10-13': { link: 'https://drive.uc.cn/s/e794490ecf8a4', code: 'zpwj' },
+'2026-10-14': { link: 'https://drive.uc.cn/s/39f227beb2b94', code: 'xal7' },
+'2026-10-15': { link: 'https://drive.uc.cn/s/77512ff2c9564', code: 'gm7t' },
+'2026-10-16': { link: 'https://drive.uc.cn/s/e4fb3749f5724', code: 'rzs7' },
+'2026-10-17': { link: 'https://drive.uc.cn/s/99c941de67a34', code: 'vv4n' },
+'2026-10-18': { link: 'https://drive.uc.cn/s/7dd4a902cdbf4', code: 'f0nv' },
+'2026-10-19': { link: 'https://drive.uc.cn/s/acd948b3d38b4', code: 'r6o7' },
+'2026-10-20': { link: 'https://drive.uc.cn/s/3cf06472304a4', code: '9mk0' },
+'2026-10-21': { link: 'https://drive.uc.cn/s/e2a92909f54c4', code: 'sqsy' },
+'2026-10-22': { link: 'https://drive.uc.cn/s/c67589d0af9f4', code: '1ezv' },
+'2026-10-23': { link: 'https://drive.uc.cn/s/01b7adcdf2dd4', code: 'g1x3' },
+'2026-10-24': { link: 'https://drive.uc.cn/s/29b3e8cf3b274', code: 'wjgb' },
+'2026-10-25': { link: 'https://drive.uc.cn/s/d48d44f2cf964', code: 'ezik' },
+'2026-10-26': { link: 'https://drive.uc.cn/s/4241b34e92154', code: '5vs8' },
+'2026-10-27': { link: 'https://drive.uc.cn/s/19e55a0bd1454', code: 'b0ev' },
+'2026-10-28': { link: 'https://drive.uc.cn/s/e650370a6f1a4', code: 'bjsk' },
+'2026-10-29': { link: 'https://drive.uc.cn/s/4e00b6b607f34', code: 'jfc3' },
+'2026-10-30': { link: 'https://drive.uc.cn/s/7a15f60ab4d54', code: 'jcsx' },
+'2026-10-31': { link: 'https://drive.uc.cn/s/199af877f5024', code: 'qlc5' },
+'2026-11-01': { link: 'https://drive.uc.cn/s/61202bdb566b4', code: 'ol9k' },
+'2026-11-02': { link: 'https://drive.uc.cn/s/2ddb0a7de5294', code: 'v1ko' },
+'2026-11-03': { link: 'https://drive.uc.cn/s/e4a6133117ff4', code: 'ikg2' },
+'2026-11-04': { link: 'https://drive.uc.cn/s/4977163732da4', code: 'yekg' },
+'2026-11-05': { link: 'https://drive.uc.cn/s/734846206bf94', code: 'l11x' },
+'2026-11-06': { link: 'https://drive.uc.cn/s/9eda29baaf2a4', code: '009r' },
+'2026-11-07': { link: 'https://drive.uc.cn/s/b9e5b35e1ce74', code: '3vwd' },
+'2026-11-08': { link: 'https://drive.uc.cn/s/85a9fc7bde364', code: 'uhb5' },
+'2026-11-09': { link: 'https://drive.uc.cn/s/7b1e71c453584', code: 'om9b' },
+'2026-11-10': { link: 'https://drive.uc.cn/s/c167a1d8e1f84', code: 'cb79' },
+'2026-11-11': { link: 'https://drive.uc.cn/s/90146cbfa0e34', code: 'ucb4' },
+'2026-11-12': { link: 'https://drive.uc.cn/s/7b33872d0dad4', code: 'irgi' },
+'2026-11-13': { link: 'https://drive.uc.cn/s/c4628636e1424', code: 'vfdm' },
+'2026-11-14': { link: 'https://drive.uc.cn/s/593565f0116a4', code: 'pfqo' },
+'2026-11-15': { link: 'https://drive.uc.cn/s/7ae13c77de8a4', code: '3ibq' },
 '2026-11-16': { link: 'https://drive.uc.cn/s/c115447718744', code: 'fu07' },
 '2026-11-17': { link: 'https://drive.uc.cn/s/4f2f58d507704', code: 'i5mn' },
 '2026-11-18': { link: 'https://drive.uc.cn/s/45aa03c893824', code: 'q1cd' },
@@ -24,7 +56,7 @@
 '2026-11-29': { link: 'https://drive.uc.cn/s/21bafaf812274', code: 'wy37' },
 '2026-11-30': { link: 'https://drive.uc.cn/s/38fe45411e5a4', code: '4n9r' },
 '2026-12-01': { link: 'https://drive.uc.cn/s/8fb8d66c55f44', code: 'kcfv' },
-    '2026-10-12': { link: 'https://pan.quark.cn/s/c1b462986761', code: 'szjq' }
+    '2026-10-13': { link: 'https://pan.quark.cn/s/2d845545b9c6', code: 'zpwj' }
      };
 
   // ═══════════════════════════════════════════
